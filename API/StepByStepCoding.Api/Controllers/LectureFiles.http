@@ -1,0 +1,39 @@
+# Log in using Auth.http first; these requests use the HTTP client cookie jar.
+@host = https://localhost:7147
+@id = 00000000-0000-0000-0000-000000000001
+@version = 00000000-0000-0000-0000-000000000002
+
+### List
+GET {{host}}/api/files?page=1&recordsPerPage=20
+
+### Detail
+GET {{host}}/api/files/{{id}}
+
+### CreateLectureFile
+POST {{host}}/api/files
+Content-Type: application/json
+
+{
+  "lectureId": "{{id}}",
+  "fileName": "Example",
+  "language": 1,
+  "savedContent": "Example",
+  "savedRevision": 1
+}
+
+### UpdateLectureFile
+PUT {{host}}/api/files/{{id}}
+Content-Type: application/json
+
+{
+  "version": "{{version}}",
+  "fileName": "Example",
+  "language": 1,
+  "savedContent": "Example",
+  "savedRevision": 1
+}
+
+### DeleteLectureFile
+DELETE {{host}}/api/files/{{id}}?version={{version}}
+
+### Both lecture and personal files use this detail endpoint. Me returns the personal file ID.

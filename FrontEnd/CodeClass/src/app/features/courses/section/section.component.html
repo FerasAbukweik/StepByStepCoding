@@ -1,0 +1,158 @@
+<div class="p-4 md:p-6 max-w-[1400px] mx-auto">
+  @if (loading()) {
+    <app-state-panel [loading]="true" />
+  } @else if (error()) {
+    <app-state-panel [message]="error()" (retry)="load()" />
+  } @else {
+    <div class="flex flex-col gap-6 w-full">
+      <header class="flex flex-col gap-space-xs">
+        <nav class="flex items-center gap-space-xs text-xs text-textMuted mb-space-sm">
+          <a routerLink="/courses" class="hover:text-textPrimary">My Courses</a>
+          <span>/</span>
+          <span>{{ section()?.name }}</span>
+        </nav>
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+              {{ section()?.courseName || 'Course' }}
+            </h1>
+            <p class="text-on-surface-variant mt-2">
+              {{ section()?.name }} · {{ section()?.instructorName }}
+            </p>
+          </div>
+          @if (canManage() && tab() === 'lectures') {
+            <button class="button-primary" (click)="editingLecture.set(null); showCreate.set(true)">
+              + New lecture
+            </button>
+          }
+        </div>
+      </header>
+
+      <section
+        class="rounded bg-statusLiveBg border border-statusLive p-space-sm md:px-space-md md:py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm"
+        [hidden]="!live()"
+      >
+        @if (live(); as lecture) {
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <span class="text-statusLive font-mono text-xs">● LIVE NOW</span>
+              <span>{{ lecture.title }}</span>
+            </div>
+            <a [routerLink]="['/lectures', lecture.id]" class="button-primary">Join lecture →</a>
+          </div>
+        }
+      </section>
+
+      <div class="border-b border-outline-variant flex items-center justify-between mt-1">
+        <div class="flex items-center gap-space-lg" role="tablist">
+          <button
+            class="py-3 font-medium border-b-2"
+            [class.border-focusOutline]="tab() === 'lectures'"
+            [class.border-transparent]="tab() !== 'lectures'"
+            (click)="tab.set('lectures')"
+          >
+            Lectures
+            <span class="ml-1 text-textMuted">{{ lectures().length }}</span>
+          </button>
+          <button
+            class="py-3 font-medium border-b-2"
+            [class.border-focusOutline]="tab() === 'exams'"
+            [class.border-transparent]="tab() !== 'exams'"
+            (click)="tab.set('exams')"
+          >
+            Exams
+            <span class="ml-1 text-textMuted">{{ exams().length }}</span>
+          </button>
+          @if (canManage()) {
+            <button
+              class="py-3 font-medium border-b-2"
+              [class.border-focusOutline]="tab() === 'students'"
+              [class.border-transparent]="tab() !== 'students'"
+              (click)="tab.set('students')"
+            >
+              Students
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-6">
+        @if (tab() === 'lectures') {
+          <app-lecture-table
+            [lectures]="lectures()"
+            title="Scheduled & completed sessions"
+            [manage]="canManage()"
+            (edit)="edit($event)"
+            (changeStatus)="changeStatus($event)"
+            (remove)="deletingLecture.set($event)"
+          />
+          @if (hasMore()) {
+            <button
+              class="text-accentBlue mt-3"
+              appVisible
+              (appVisible)="more()"
+              (click)="more()"
+              [disabled]="loadingMore()"
+            >
+              Load more lectures
+            </button>
+          }
+        } @else if (tab() === 'students') {
+          @if (canManage()) {
+            <app-roster [sectionId]="sectionId()" />
+          }
+        } @else {
+          @if (canManage()) {
+            <a
+              routerLink="/exams"
+              [queryParams]="{ section: sectionId() }"
+              class="button-primary self-start"
+            >
+              Manage exams →
+            </a>
+          }
+          <app-exam-table [exams]="exams()" />
+          @if (examsData.hasMore()) {
+            <button class="button-secondary" [disabled]="examsData.loading()" (click)="moreExams()">
+              {{ examsData.loading() ? 'Loading…' : 'Load more exams' }}
+            </button>
+          }
+        }
+      </div>
+    </div>
+  }
+  @if (showCreate()) {
+    <app-lecture-form
+      [sectionId]="sectionId()"
+      [lecture]="editingLecture()"
+      (closed)="showCreate.set(false)"
+      (created)="refresh()"
+    />
+  }
+</div>
+
+@if (pendingLecture(); as lecture) {
+  <app-confirm-dialog
+    [error]="actionError()"
+    [heading]="lecture.status === 1 ? 'Start lecture?' : 'End lecture?'"
+    [message]="
+      lecture.status === 1
+        ? 'Students can join the live classroom and receive your code changes.'
+        : 'The lecture code will become read only. Saved code will remain available to enrolled students.'
+    "
+    [busy]="saving()"
+    (closed)="pendingLecture.set(null)"
+    (confirmed)="confirmStatus()"
+  />
+}
+@if (deletingLecture(); as lecture) {
+  <app-confirm-dialog
+    [error]="actionError()"
+    [heading]="'Delete ' + lecture.title + '?'"
+    message="This removes the scheduled lecture and its file. This cannot be undone."
+    label="Delete lecture"
+    [busy]="saving()"
+    (closed)="deletingLecture.set(null)"
+    (confirmed)="removeLecture()"
+  />
+}

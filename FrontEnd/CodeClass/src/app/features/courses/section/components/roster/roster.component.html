@@ -1,0 +1,109 @@
+<section class="panel">
+  <header class="mb-5 flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h2 class="text-lg font-semibold">Enrolled students</h2>
+      <p class="mt-1 text-sm text-textSecondary">
+        Active enrollment gives students access to this section.
+      </p>
+    </div>
+    <button class="button-primary" (click)="adding.set(true); service.actionError.set('')">
+      + Enroll student
+    </button>
+  </header>
+  @if (service.loading()) {
+    <app-state-panel [loading]="true" />
+  } @else if (service.error()) {
+    <app-state-panel [message]="service.error()" (retry)="load(service.page())" />
+  } @else {
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Status</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of service.pageItems(); track item.id) {
+            <tr>
+              <td class="font-medium">{{ item.studentName || 'Student' }}</td>
+              <td>
+                <span class="status-badge" [class.text-statusLive]="item.status === 1">
+                  {{ item.status === 1 ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+              <td>
+                <div class="flex flex-wrap justify-end gap-2">
+                  <button
+                    class="button-secondary"
+                    [disabled]="service.saving()"
+                    (click)="toggle(item)"
+                  >
+                    {{ item.status === 1 ? 'Deactivate' : 'Activate' }}
+                  </button>
+                  <button
+                    class="button-secondary text-statusError"
+                    [disabled]="service.saving()"
+                    (click)="removing.set(item)"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="3" class="empty-state">No students are enrolled yet.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <app-pagination [page]="service.page()" [total]="service.total()" (changed)="load($event)" />
+  }
+  @if (service.actionError() && !adding()) {
+    <p class="mt-4 text-statusError" role="alert">{{ service.actionError() }}</p>
+  }
+</section>
+@if (adding()) {
+  <app-dialog heading="Enroll student" [busy]="service.saving()" (closed)="adding.set(false)">
+    <div class="space-y-5">
+      <app-user-select
+        role="Student"
+        [selectedId]="studentId()"
+        (selected)="studentId.set($event)"
+      />
+      <p class="text-sm text-textSecondary">
+        Account not found?
+        <a routerLink="/users" class="text-accentBlue">Create a student account first.</a>
+      </p>
+      @if (service.actionError()) {
+        <p class="text-statusError" role="alert">{{ service.actionError() }}</p>
+      }
+      <footer class="flex justify-end gap-3">
+        <button class="button-secondary" [disabled]="service.saving()" (click)="adding.set(false)">
+          Cancel
+        </button>
+        <button
+          class="button-primary"
+          [disabled]="!studentId() || service.saving()"
+          (click)="add()"
+        >
+          {{ service.saving() ? 'Enrolling…' : 'Enroll student' }}
+        </button>
+      </footer>
+    </div>
+  </app-dialog>
+}
+@if (removing(); as item) {
+  <app-confirm-dialog
+    [error]="service.actionError()"
+    [heading]="'Remove ' + (item.studentName || 'student') + '?'"
+    message="This removes the enrollment. Existing academic records may prevent deletion; you can deactivate enrollment instead."
+    label="Remove enrollment"
+    [busy]="service.saving()"
+    (closed)="removing.set(null)"
+    (confirmed)="remove()"
+  />
+}

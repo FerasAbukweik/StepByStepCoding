@@ -1,0 +1,82 @@
+<app-dialog
+  [heading]="exam() ? 'Edit exam' : 'New exam'"
+  [busy]="saving()"
+  (closed)="closed.emit()"
+>
+  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-5">
+    @if (!exam()) {
+      <label class="form-label">
+        Course section
+        <select class="form-input mt-2" formControlName="sectionId">
+          <option value="">Select a section</option>
+          @for (section of sections(); track section.id) {
+            <option [value]="section.id">{{ section.courseName }} · {{ section.name }}</option>
+          }
+        </select>
+      </label>
+      @if (sectionsLoading() || moreSections()) {
+        <button
+          type="button"
+          class="button-secondary"
+          [disabled]="sectionsLoading()"
+          (click)="loadSections()"
+        >
+          {{ sectionsLoading() ? 'Loading sections…' : 'Load more sections' }}
+        </button>
+      }
+    }
+    <label class="form-label">
+      Title
+      <input class="form-input mt-2" formControlName="title" maxlength="250" />
+    </label>
+    <label class="form-label">
+      Instructions
+      <span class="text-textMuted">(optional)</span>
+      <textarea
+        class="form-input mt-2 min-h-28"
+        formControlName="instructions"
+        maxlength="8000"
+      ></textarea>
+    </label>
+    <div class="grid gap-4 sm:grid-cols-2">
+      <label class="form-label">
+        Opens
+        <input type="datetime-local" class="form-input mt-2" formControlName="startsAt" />
+      </label>
+      <label class="form-label">
+        Deadline
+        <input type="datetime-local" class="form-input mt-2" formControlName="deadline" />
+      </label>
+    </div>
+    <label class="form-label">
+      Attempt duration (minutes)
+      <input
+        type="number"
+        class="form-input mt-2"
+        formControlName="durationMinutes"
+        min="1"
+        max="1440"
+      />
+    </label>
+    <p class="text-sm text-textSecondary">
+      Dates use your local time. An attempt ends when its duration runs out or the exam deadline is
+      reached, whichever comes first.
+    </p>
+    @if (form.invalid && form.touched) {
+      <p class="text-sm text-statusError" role="alert">
+        Complete the required fields with valid values.
+      </p>
+    }
+    @if (error()) {
+      <p class="text-sm text-statusError" role="alert">{{ error() }}</p>
+    }
+    <footer class="flex justify-end gap-3 pt-2">
+      <button type="button" class="button-secondary" [disabled]="saving()" (click)="closed.emit()">
+        Cancel
+      </button>
+      <button class="button-primary" [disabled]="saving()">
+        {{ saving() ? 'Saving…' : 'Save exam' }}
+      </button>
+    </footer>
+  </form>
+</app-dialog>

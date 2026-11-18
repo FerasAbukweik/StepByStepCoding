@@ -1,0 +1,28 @@
+@host = https://localhost:7147
+@email = person@example.com
+@password = Password123!
+
+### Signup: requires an Admin/Instructor session; preserves the caller cookies
+POST {{host}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "fullName": "Test User",
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "roles": [3]
+}
+
+### Roles: Instructor = 2 (Admin only), Student = 3 (Admin or Instructor)
+
+### Login: returns 200 and sets HttpOnly token cookies; no response body
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### Refresh: uses the refresh cookie from the HTTP client cookie jar; no request body
+POST {{host}}/api/auth/refresh-token

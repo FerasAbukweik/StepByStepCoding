@@ -1,0 +1,73 @@
+<app-dialog
+  [heading]="question() ? 'Edit question' : 'New question'"
+  [busy]="questionsData.saving()"
+  (closed)="closed.emit()"
+>
+  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-5">
+    <label class="form-label">
+      Title
+      <input class="form-input mt-2" formControlName="title" maxlength="250" />
+    </label>
+    <label class="form-label">
+      Problem statement
+      <textarea
+        class="form-input mt-2 min-h-48 font-mono"
+        formControlName="description"
+        maxlength="20000"
+      ></textarea>
+    </label>
+    <p class="text-sm text-textMuted">
+      Line breaks and indentation are preserved. Use triple backticks around code blocks.
+    </p>
+    <label class="form-label">
+      Image URL or path
+      <span class="text-textMuted">(optional)</span>
+      <input class="form-input mt-2" formControlName="imagePath" maxlength="1024" />
+    </label>
+    <div class="grid gap-4 sm:grid-cols-2">
+      <label class="form-label">
+        Maximum mark
+        <input
+          class="form-input mt-2"
+          type="number"
+          formControlName="maxScore"
+          min="0.01"
+          max="10000"
+          step="0.01"
+        />
+      </label>
+      <label class="form-label">
+        Display order
+        <input
+          class="form-input mt-2"
+          type="number"
+          formControlName="displayOrder"
+          min="0"
+          max="1000"
+          step="1"
+        />
+      </label>
+    </div>
+    @if (form.invalid && form.touched) {
+      <p class="text-sm text-statusError" role="alert">
+        Enter a title, description, valid mark and display order.
+      </p>
+    }
+    @if (questionsData.actionError()) {
+      <p class="text-sm text-statusError" role="alert">{{ questionsData.actionError() }}</p>
+    }
+    <footer class="flex justify-end gap-3">
+      <button
+        type="button"
+        class="button-secondary"
+        [disabled]="questionsData.saving()"
+        (click)="closed.emit()"
+      >
+        Cancel
+      </button>
+      <button class="button-primary" [disabled]="questionsData.saving()">
+        {{ questionsData.saving() ? 'Saving…' : 'Save question' }}
+      </button>
+    </footer>
+  </form>
+</app-dialog>

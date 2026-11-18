@@ -1,0 +1,36 @@
+# Log in using Auth.http first; these requests use the HTTP client cookie jar.
+@host = https://localhost:7147
+@attemptId = 00000000-0000-0000-0000-000000000003
+@questionId = 00000000-0000-0000-0000-000000000004
+@id = 00000000-0000-0000-0000-000000000001
+@version = 00000000-0000-0000-0000-000000000002
+
+### List
+GET {{host}}/api/submissions?page=1&recordsPerPage=20
+
+### Detail
+GET {{host}}/api/submissions/{{id}}
+
+### SubmitCode
+POST {{host}}/api/submissions
+Content-Type: application/json
+
+{
+  "attemptId": "{{id}}",
+  "questionId": "{{id}}",
+  "submittedCode": "Example",
+  "language": 1
+}
+
+### GradeSubmission
+POST {{host}}/api/submissions/{{id}}/grade
+Content-Type: application/json
+
+{
+  "version": "{{version}}",
+  "score": 10,
+  "feedback": null
+}
+
+### Submission for one question, without scanning other submission pages
+GET {{host}}/api/submissions?AttemptId={{attemptId}}&QuestionId={{questionId}}&Page=1&RecordsPerPage=20

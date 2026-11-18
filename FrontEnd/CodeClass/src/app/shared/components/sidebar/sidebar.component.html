@@ -1,0 +1,177 @@
+<aside
+  class="h-full w-64 bg-surface border-r border-borderPrimary flex flex-col shrink-0 select-none"
+>
+  <div class="h-14 border-b border-borderPrimary px-4 flex items-center gap-2 shrink-0">
+    <div class="w-2.5 h-2.5 bg-accentBlue rounded-sm"></div>
+    <span class="font-semibold text-textPrimary tracking-tight text-md">CodeClass</span>
+    <span class="text-textMuted text-xs font-mono ml-auto">CS Dept</span>
+  </div>
+
+  <div class="py-2.5 px-2 border-b border-borderSubtle shrink-0">
+    <nav class="space-y-0.5" aria-label="Main Navigation" (click)="chosen.emit()">
+      <a
+        routerLink="/"
+        [routerLinkActiveOptions]="{ exact: true }"
+        routerLinkActive="selected-nav"
+        ariaCurrentWhenActive="page"
+        class="flex min-h-10 items-center justify-between px-2.5 py-1.5 rounded-sm text-base text-textSecondary hover:text-textPrimary hover:bg-surfaceHover transition-colors border-l-2 border-transparent"
+      >
+        <span class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-textMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+            ></path>
+          </svg>
+          <span>Home</span>
+        </span>
+      </a>
+      <a
+        routerLink="/courses"
+        routerLinkActive="selected-nav"
+        ariaCurrentWhenActive="page"
+        class="flex items-center gap-2 px-2.5 py-1.5 rounded-sm text-base text-textSecondary hover:text-textPrimary hover:bg-surfaceHover transition-colors border-l-2 border-transparent"
+      >
+        <svg class="w-4 h-4 text-textMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+          ></path>
+        </svg>
+        <span>My Courses</span>
+      </a>
+      <a
+        routerLink="/exams"
+        routerLinkActive="selected-nav"
+        ariaCurrentWhenActive="page"
+        class="flex items-center justify-between px-2.5 py-1.5 rounded-sm text-base text-textSecondary hover:text-textPrimary hover:bg-surfaceHover transition-colors border-l-2 border-transparent"
+      >
+        <span class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-textMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            ></path>
+          </svg>
+          <span>Exams</span>
+        </span>
+        <span
+          class="font-mono text-2xs px-1.5 py-0.2 bg-amber-950/60 border border-amber-800 text-statusWarning rounded"
+        >
+          {{ examsData.total() }}
+        </span>
+      </a>
+      <a
+        routerLink="/workspace"
+        routerLinkActive="selected-nav"
+        ariaCurrentWhenActive="page"
+        class="flex items-center gap-2 px-2.5 py-1.5 rounded-sm text-base text-textSecondary hover:text-textPrimary hover:bg-surfaceHover transition-colors border-l-2 border-transparent"
+      >
+        <svg class="w-4 h-4 text-textMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+          ></path>
+        </svg>
+        <span>My Workspace</span>
+      </a>
+      @if (auth.canTeach()) {
+        <a
+          routerLink="/users"
+          routerLinkActive="selected-nav"
+          ariaCurrentWhenActive="page"
+          class="flex min-h-11 items-center gap-2 rounded-sm border-l-2 border-transparent px-2.5 text-textSecondary hover:bg-surfaceHover hover:text-textPrimary"
+        >
+          Users
+        </a>
+      }
+      <a
+        routerLink="/account"
+        routerLinkActive="selected-nav"
+        ariaCurrentWhenActive="page"
+        class="flex min-h-11 items-center gap-2 rounded-sm border-l-2 border-transparent px-2.5 text-textSecondary hover:bg-surfaceHover hover:text-textPrimary"
+      >
+        My account
+      </a>
+    </nav>
+  </div>
+
+  <div
+    class="flex-1 overflow-y-auto custom-scrollbar p-2 flex flex-col space-y-4"
+    aria-label="My Lectures Schedule"
+  >
+    <div class="px-2 py-1 flex items-center justify-between">
+      <span class="text-xs font-mono uppercase text-textMuted tracking-wider font-semibold">
+        My Lectures
+      </span>
+      <span class="text-2xs text-textMuted">{{ lecturesData.loadedItems().length }}</span>
+    </div>
+    @if (lecturesData.loading() && !lecturesData.loadedItems().length) {
+      <app-state-panel [loading]="true" />
+    }
+    @for (lecture of lecturesData.loadedItems(); track lecture.id) {
+      <a
+        [routerLink]="['/lectures', lecture.id]"
+        routerLinkActive="selected-nav"
+        ariaCurrentWhenActive="page"
+        (click)="chosen.emit()"
+        class="group block rounded-sm border border-borderSubtle bg-app p-2 hover:bg-surfaceHover hover:border-borderPrimary transition-colors"
+      >
+        <div class="flex items-center justify-between gap-1">
+          <span class="truncate text-xs text-textSecondary font-mono">
+            {{ sectionsData.courseName(lecture.sectionId) }}
+          </span>
+          <app-lecture-status [status]="lecture.status" />
+        </div>
+        <div class="text-base font-medium text-textPrimary truncate mt-1">
+          {{ lecture.title }}
+        </div>
+        <div class="flex items-center justify-between mt-2 pt-1.5 border-t border-borderSubtle">
+          <span class="font-mono text-xs text-textSecondary">
+            {{ lecture.scheduledStart | date: 'EEE HH:mm' }}
+          </span>
+          <span class="text-xs text-accentBlue">
+            {{ lecture.status === 3 ? 'Saved code →' : 'Open →' }}
+          </span>
+        </div>
+      </a>
+    } @empty {
+      @if (!lecturesData.loading()) {
+        <p class="px-2 text-xs text-textMuted">No lectures scheduled.</p>
+      }
+    }
+    @if (lecturesData.hasMore()) {
+      <button
+        class="text-xs text-accentBlue py-2"
+        (click)="loadMore()"
+        [disabled]="lecturesData.loading()"
+      >
+        {{ lecturesData.loading() ? 'Loading…' : 'Load more lectures' }}
+      </button>
+    }
+  </div>
+
+  <div
+    class="p-2 border-t border-borderSubtle bg-surface text-2xs font-mono text-textMuted flex items-center justify-between"
+  >
+    <div class="flex items-center justify-between px-3 py-3 text-2xs font-mono text-textMuted">
+      <span class="flex items-center gap-2">
+        <span
+          class="h-1.5 w-1.5 rounded-full"
+          [class.bg-statusLive]="hub.state() === 'connected'"
+          [class.bg-statusWarning]="hub.state() !== 'connected'"
+        ></span>
+        {{ hub.state() }}
+      </span>
+      <span>CodeClass</span>
+    </div>
+  </div>
+</aside>

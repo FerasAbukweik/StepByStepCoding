@@ -1,0 +1,279 @@
+<div class="page-container">
+  @if (loading()) {
+    <app-state-panel [loading]="true" />
+  } @else if (error()) {
+    <app-state-panel [message]="error()" (retry)="reload()" />
+  } @else if (exam(); as exam) {
+    <header class="page-heading">
+      <div>
+        <a routerLink="/exams" class="eyebrow hover:text-accentBlue">← Exams</a>
+        <h1 class="mt-2">{{ exam.title }}</h1>
+        <p class="page-description">
+          {{ sectionsData.courseName(exam.sectionId) }} ·
+          {{ sectionsData.sectionName(exam.sectionId) }}
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="status-badge">
+          {{ exam.status === 1 ? 'Draft' : exam.status === 2 ? 'Published' : 'Closed' }}
+        </span>
+        <button class="button-secondary" [disabled]="saving()" (click)="reload()">Refresh</button>
+        @if (manager()) {
+          @if (exam.status === 1) {
+            <button class="button-secondary" (click)="editing.set(true)">Edit exam</button>
+            <button
+              class="button-secondary text-statusError"
+              title="Remove all questions before deleting the draft."
+              [disabled]="!!questions().length || saving()"
+              (click)="confirmation.set('delete-exam')"
+            >
+              Delete draft
+            </button>
+            <button
+              class="button-primary"
+              [disabled]="!questions().length || saving()"
+              (click)="confirmation.set('publish')"
+            >
+              Publish
+            </button>
+          } @else if (exam.status === 2) {
+            <button
+              class="button-secondary"
+              [disabled]="saving()"
+              (click)="confirmation.set('close')"
+            >
+              Close exam
+            </button>
+          }
+        } @else if (canStart()) {
+          <button class="button-primary" (click)="confirmation.set('start')">Start attempt</button>
+        }
+      </div>
+    </header>
+
+    <div class="mb-6 grid gap-4 sm:grid-cols-3">
+      <div class="panel">
+        <p class="eyebrow">Opens</p>
+        <p class="mt-2 font-medium">{{ exam.startsAt | date: 'medium' }}</p>
+      </div>
+      <div class="panel">
+        <p class="eyebrow">Deadline</p>
+        <p class="mt-2 font-medium">{{ exam.deadline | date: 'medium' }}</p>
+      </div>
+      <div class="panel">
+        <p class="eyebrow">Attempt duration</p>
+        <p class="mt-2 font-medium">{{ exam.durationMinutes }} minutes</p>
+        <p class="mt-1 text-sm text-textMuted">Ends earlier if the deadline is reached.</p>
+      </div>
+    </div>
+
+    @if (exam.instructions) {
+      <section class="panel mb-6">
+        <h2 class="font-semibold">Instructions</h2>
+        <p class="mt-3 whitespace-pre-wrap leading-relaxed text-textSecondary">
+          {{ exam.instructions }}
+        </p>
+      </section>
+    }
+
+    @if (manager()) {
+      <nav class="page-tabs mb-6" aria-label="Exam sections">
+        <button [class.active-tab]="tab() === 'questions'" (click)="tab.set('questions')">
+          Questions
+        </button>
+        <button [class.active-tab]="tab() === 'attempts'" (click)="tab.set('attempts')">
+          Attempts & grading
+        </button>
+      </nav>
+      @if (tab() === 'questions') {
+        <section class="panel">
+          <header class="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-semibold">Questions</h2>
+              <p class="mt-1 text-sm text-textSecondary">
+                {{ questions().length }} of {{ questionsData.total() }} questions loaded
+              </p>
+            </div>
+            @if (exam.status === 1) {
+              <button class="button-primary" (click)="newQuestion()">+ Add question</button>
+            }
+          </header>
+          <div class="space-y-3">
+            @for (question of questions(); track question.id; let index = $index) {
+              <article class="rounded-lg border border-borderPrimary p-4">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h3 class="font-medium">{{ index + 1 }}. {{ question.title }}</h3>
+                    <p class="mt-1 text-sm text-textSecondary">
+                      {{ question.maxScore }} marks · Order {{ question.displayOrder }}
+                    </p>
+                  </div>
+                  <div class="flex gap-2">
+                    <button class="button-secondary" (click)="edit(question)" [disabled]="saving()">
+                      {{ exam.status === 1 ? 'Edit' : 'View' }}
+                    </button>
+                    @if (exam.status === 1) {
+                      <button
+                        class="button-secondary text-statusError"
+                        (click)="remove(question)"
+                        [disabled]="saving()"
+                      >
+                        Delete
+                      </button>
+                    }
+                  </div>
+                </div>
+              </article>
+            } @empty {
+              <p class="empty-state">Add your first question before publishing this exam.</p>
+            }
+          </div>
+          @if (questionsData.hasMore()) {
+            <button
+              class="button-secondary mt-4"
+              [disabled]="questionsData.loading() || saving()"
+              (click)="moreQuestions()"
+            >
+              {{ questionsData.loading() ? 'Loading…' : 'Load more questions' }}
+            </button>
+          }
+        </section>
+      } @else {
+        <section class="panel">
+          <header class="mb-5">
+            <h2 class="text-lg font-semibold">Student attempts</h2>
+            <p class="mt-1 text-sm text-textSecondary">
+              Open an attempt to view submitted answers and assign marks.
+            </p>
+          </header>
+          @if (reviewing()) {
+            <app-state-panel [loading]="true" />
+          }
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Started</th>
+                  <th>Ends</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (attempt of attempts(); track attempt.id) {
+                  <tr>
+                    <td class="font-medium">{{ attempt.studentName || 'Student' }}</td>
+                    <td>{{ attempt.startedAt | date: 'short' }}</td>
+                    <td>{{ attempt.expiresAt | date: 'short' }}</td>
+                    <td>
+                      {{
+                        attempt.status === 2
+                          ? 'Submitted'
+                          : now() >= +dateValue(attempt.expiresAt)
+                            ? 'Expired'
+                            : 'In progress'
+                      }}
+                    </td>
+                    <td class="text-right">
+                      <button
+                        class="text-accentBlue"
+                        [disabled]="reviewing()"
+                        (click)="review(attempt)"
+                      >
+                        Review →
+                      </button>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="5" class="empty-state">No students have started this exam.</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <app-pagination
+            [page]="attemptPage()"
+            [total]="attemptTotal()"
+            [busy]="reviewing()"
+            (changed)="moreAttempts($event)"
+          />
+        </section>
+        @if (attempt() && !reviewing()) {
+          <div class="mt-6">
+            <app-exam-work-area
+              [manager]="manager()"
+              [studentName]="studentName()"
+              [(drafts)]="drafts"
+              [(selectedQuestion)]="selectedQuestion"
+            />
+          </div>
+        }
+      }
+    } @else if (attempt() && !actionBusy()) {
+      <app-exam-work-area
+        [manager]="manager()"
+        [studentName]="studentName()"
+        [(drafts)]="drafts"
+        [(selectedQuestion)]="selectedQuestion"
+      />
+    } @else {
+      <section class="panel">
+        <h2 class="text-lg font-semibold">Before you start</h2>
+        <p class="mt-3 leading-relaxed text-textSecondary">
+          You have one attempt. Submit each question individually; submitted answers cannot be
+          changed. Your instructor will manually review your code and assign marks.
+        </p>
+        @if (canStart()) {
+          <p class="mt-3 text-sm text-statusLive">This exam is open. Start when you are ready.</p>
+        } @else {
+          <p class="mt-3 text-sm text-textMuted">
+            {{
+              now() < dateValue(exam.startsAt)
+                ? 'This exam has not opened yet.'
+                : 'This exam is closed for new attempts.'
+            }}
+          </p>
+        }
+      </section>
+    }
+    @if (actionError()) {
+      <p class="mt-4 text-statusError" role="alert">{{ actionError() }}</p>
+    }
+
+    @if (editing()) {
+      <app-exam-form [exam]="exam" (closed)="editing.set(false)" (saved)="saved()" />
+    }
+    @if (questionForm()) {
+      @if (exam.status === 1) {
+        <app-question-form
+          [question]="editQuestion()"
+          (closed)="questionForm.set(false)"
+          (saved)="saved()"
+        />
+      } @else if (editQuestion(); as question) {
+        <app-dialog [heading]="question.title" (closed)="questionForm.set(false)">
+          <app-problem-statement
+            [description]="question.description"
+            [image]="question.imagePath"
+          />
+          <p class="mt-4 text-sm text-textSecondary">{{ question.maxScore }} marks</p>
+          <footer class="mt-6 flex justify-end">
+            <button class="button-secondary" (click)="questionForm.set(false)">Close</button>
+          </footer>
+        </app-dialog>
+      }
+    }
+    @if (confirmation()) {
+      <app-confirm-dialog
+        [error]="actionError()"
+        [heading]="confirmationHeading()"
+        [message]="confirmationText()"
+        [busy]="saving()"
+        (closed)="confirmation.set(null)"
+        (confirmed)="confirmAction()"
+      />
+    }
+  }
+</div>

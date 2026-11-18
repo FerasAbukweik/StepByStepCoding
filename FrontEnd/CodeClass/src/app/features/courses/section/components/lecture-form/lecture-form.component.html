@@ -1,0 +1,72 @@
+<app-dialog
+  [heading]="
+    lecture() ? (lecture()?.fileId ? 'Edit lecture' : 'Set up lecture file') : 'New lecture'
+  "
+  [busy]="saving() || loading()"
+  (closed)="closed.emit()"
+>
+  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-5">
+    <label class="form-label">
+      Title
+      <input class="form-input mt-2" formControlName="title" maxlength="250" />
+    </label>
+    <label class="form-label">
+      Scheduled start
+      <input type="datetime-local" class="form-input mt-2" formControlName="scheduledStart" />
+    </label>
+    @if (!loading()) {
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class="form-label">
+          File name
+          <input class="form-input mt-2" formControlName="fileName" maxlength="250" />
+        </label>
+        <label class="form-label">
+          Language
+          <select class="form-input mt-2" formControlName="language">
+            <option [ngValue]="1">C++</option>
+            <option [ngValue]="2">Java</option>
+            <option [ngValue]="3">Python</option>
+          </select>
+        </label>
+      </div>
+      <button type="button" class="text-accentBlue" (click)="showCode.set(!showCode())">
+        {{ showCode() ? 'Hide initial code' : 'Add initial code (optional)' }}
+      </button>
+      @if (showCode()) {
+        <div class="flex overflow-hidden rounded-lg border border-borderPrimary">
+          <app-code-editor
+            [code]="form.controls.initialCode.value"
+            [language]="language()"
+            (changed)="form.controls.initialCode.setValue($event.code)"
+          />
+        </div>
+      }
+    } @else {
+      <p class="text-sm text-textSecondary" role="status">Loading lecture file…</p>
+    }
+    @if (form.invalid && form.touched) {
+      <p class="text-sm text-statusError" role="alert">
+        Complete the required fields with valid values.
+      </p>
+    }
+    @if (actionError()) {
+      <p class="text-sm text-statusError" role="alert">{{ actionError() }}</p>
+    }
+    <footer class="flex justify-end gap-3">
+      <button
+        type="button"
+        class="button-secondary"
+        [disabled]="saving() || loading()"
+        (click)="closed.emit()"
+      >
+        Cancel
+      </button>
+      <button
+        class="button-primary"
+        [disabled]="saving() || loading() || (!!lecture()?.fileId && !file())"
+      >
+        {{ saving() ? 'Saving…' : lecture() ? 'Save changes' : 'Create lecture' }}
+      </button>
+    </footer>
+  </form>
+</app-dialog>

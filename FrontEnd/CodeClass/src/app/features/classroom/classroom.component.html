@@ -1,0 +1,29 @@
+@if (loading() && !lecture()) {
+  <div class="p-6"><app-state-panel [loading]="true" /></div>
+} @else if (failed()) {
+  <div class="p-6"><app-state-panel message="Could not load this lecture." (retry)="load()" /></div>
+} @else if (lecture(); as lecture) {
+  <div class="flex min-h-full flex-col">
+    <header class="bg-surface p-4 md:p-6">
+      <nav class="mb-3 flex flex-wrap items-center gap-2 text-xs text-textMuted">
+        <a routerLink="/courses" class="hover:text-textPrimary">My courses</a>
+        <span>/</span>
+        <span>{{ sectionsData.courseName(lecture.sectionId) }}</span>
+      </nav>
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 class="text-xl font-semibold">{{ lecture.title }}</h1>
+          <p class="mt-2 text-sm text-textSecondary">
+            {{ sectionsData.instructorName(lecture.sectionId) }}
+          </p>
+        </div>
+        <app-lecture-status [status]="lecture.status" />
+      </div>
+    </header>
+    @if (lecture.fileId; as id) {
+      <app-code-page [fileId]="id" [readOnly]="!auth.canTeach() || lecture.status !== 2" />
+    } @else {
+      <p class="p-6 text-textSecondary">No file has been added to this lecture yet.</p>
+    }
+  </div>
+}

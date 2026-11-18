@@ -1,0 +1,105 @@
+<div class="page-container">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">CodeClass / Courses</p>
+      <h1>{{ auth.hasRole('Admin') ? 'Courses & sections' : 'My courses' }}</h1>
+      <p class="page-description">Open a section to find its lectures, exams and students.</p>
+    </div>
+    @if (auth.hasRole('Admin')) {
+      <div class="flex flex-wrap gap-2">
+        <button class="button-secondary" (click)="form('course')">+ New course</button>
+        <button class="button-primary" (click)="form('section')">+ New section</button>
+      </div>
+    }
+  </header>
+  @if (auth.hasRole('Admin')) {
+    <nav class="page-tabs mb-6" aria-label="Course views">
+      <button [class.active-tab]="tab() === 'sections'" (click)="selectTab('sections')">
+        Sections
+      </button>
+      <button [class.active-tab]="tab() === 'courses'" (click)="selectTab('courses')">
+        Courses
+      </button>
+    </nav>
+  }
+  @if (service().loading()) {
+    <app-state-panel [loading]="true" />
+  } @else if (service().error()) {
+    <app-state-panel [message]="service().error()" (retry)="load(service().page())" />
+  } @else {
+    @if (tab() === 'sections') {
+      <app-course-list
+        [sections]="sectionsData.pageItems()"
+        [manage]="auth.hasRole('Admin')"
+        (edit)="form('section', $event)"
+        (remove)="deleting.set({ type: 'section', item: $event })"
+      />
+    } @else {
+      <section class="panel">
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (course of coursesData.pageItems(); track course.id) {
+                <tr>
+                  <td class="font-medium">{{ course.name }}</td>
+                  <td>
+                    <div class="flex justify-end gap-2">
+                      <button class="button-secondary" (click)="form('course', course)">
+                        Edit
+                      </button>
+                      <button
+                        class="button-secondary text-statusError"
+                        (click)="deleting.set({ type: 'course', item: course })"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="2" class="empty-state">
+                    Create your first course, then add its sections.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    }
+    <app-pagination
+      [page]="service().page()"
+      [total]="service().total()"
+      (changed)="load($event)"
+    />
+  }
+  @if (formType(); as type) {
+    <app-catalog-form
+      [type]="type"
+      [item]="editing()"
+      (closed)="formType.set(null)"
+      (saved)="saved()"
+    />
+  }
+  @if (deleting(); as target) {
+    <app-confirm-dialog
+      [error]="actionError()"
+      [heading]="'Delete ' + target.item.name + '?'"
+      message="This cannot be undone. Records with related academic data must have those dependencies removed first."
+      label="Delete"
+      [busy]="saving()"
+      (closed)="deleting.set(null)"
+      (confirmed)="remove()"
+    />
+    @if (actionError()) {
+      <p class="mt-4 text-statusError" role="alert">{{ actionError() }}</p>
+    }
+  }
+</div>

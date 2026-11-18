@@ -1,0 +1,101 @@
+<div class="page-container">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">CodeClass / Exams</p>
+      <h1>Programming exams</h1>
+      <p class="page-description">
+        {{
+          auth.canTeach()
+            ? 'Manage questions, review submissions, and assign marks.'
+            : 'Find your exams, continue an attempt, or view your results.'
+        }}
+      </p>
+    </div>
+    @if (auth.canTeach()) {
+      <button class="button-primary" (click)="creating.set(true)">+ New exam</button>
+    }
+  </header>
+
+  <section class="panel">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-4">
+      <label class="form-label max-w-sm flex-1">
+        Course section
+        <select class="form-input mt-2" [(ngModel)]="sectionId" (ngModelChange)="load()">
+          <option value="">All sections</option>
+          @for (section of sectionsData.loadedItems(); track section.id) {
+            <option [value]="section.id">{{ section.courseName }} · {{ section.name }}</option>
+          }
+        </select>
+      </label>
+      <button
+        class="button-secondary"
+        [disabled]="service.loading()"
+        (click)="load(service.page())"
+      >
+        Refresh
+      </button>
+    </div>
+
+    @if (service.loading()) {
+      <app-state-panel [loading]="true" />
+    } @else if (service.error()) {
+      <app-state-panel [message]="service.error()" (retry)="load(service.page())" />
+    } @else {
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Exam</th>
+              <th>Availability</th>
+              <th>Duration</th>
+              <th>Status</th>
+              <th><span class="sr-only">Open exam</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (exam of service.pageItems(); track exam.id) {
+              <tr>
+                <td>
+                  <a class="font-medium hover:text-accentBlue" [routerLink]="['/exams', exam.id]">
+                    {{ exam.title }}
+                  </a>
+                  <p class="mt-1 text-sm text-textSecondary">
+                    {{ sectionsData.courseName(exam.sectionId) }} ·
+                    {{ sectionsData.sectionName(exam.sectionId) }}
+                  </p>
+                </td>
+                <td>
+                  <span>{{ exam.startsAt | date: 'medium' }}</span>
+                  <p class="mt-1 text-sm text-textMuted">
+                    Until {{ exam.deadline | date: 'medium' }}
+                  </p>
+                </td>
+                <td>{{ exam.durationMinutes }} min</td>
+                <td>
+                  <span class="status-badge" [class.text-statusLive]="status(exam) === 'Open'">
+                    {{ status(exam) }}
+                  </span>
+                </td>
+                <td class="text-right">
+                  <a class="text-accentBlue" [routerLink]="['/exams', exam.id]">Open exam →</a>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty-state">No exams in this selection.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <app-pagination [page]="service.page()" [total]="service.total()" (changed)="load($event)" />
+    }
+  </section>
+  @if (creating()) {
+    <app-exam-form
+      [sectionId]="sectionId"
+      (closed)="creating.set(false)"
+      (saved)="created($event)"
+    />
+  }
+</div>

@@ -1,0 +1,32 @@
+<div
+  class="fixed bottom-5 right-5 z-100 flex w-[min(380px,calc(100vw-40px))] flex-col gap-2"
+  aria-live="polite"
+  aria-atomic="false"
+>
+  @for (toast of service.toasts(); track toast.id) {
+    <div
+      class="flex items-start gap-3 rounded border bg-surface p-4 shadow-lg"
+      [class.border-statusError]="toast.type === 'error'"
+      [class.border-statusLive]="toast.type === 'success'"
+      [class.border-borderPrimary]="toast.type === 'info'"
+      [attr.role]="toast.type === 'error' ? 'alert' : 'status'"
+    >
+      <span
+        class="mt-0.5 font-mono"
+        [class.text-statusError]="toast.type === 'error'"
+        [class.text-statusLive]="toast.type === 'success'"
+      >
+        {{ toast.type === 'error' ? '!' : toast.type === 'success' ? '✓' : 'i' }}
+      </span>
+      <p class="flex-1 text-sm">{{ toast.message }}</p>
+      <button
+        type="button"
+        class="text-textSecondary hover:text-textPrimary"
+        aria-label="Dismiss notification"
+        (click)="service.remove(toast.id)"
+      >
+        ×
+      </button>
+    </div>
+  }
+</div>

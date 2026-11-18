@@ -1,0 +1,55 @@
+# Log in using Auth.http first; these requests use the HTTP client cookie jar.
+@host = https://localhost:7147
+@id = 00000000-0000-0000-0000-000000000001
+@version = 00000000-0000-0000-0000-000000000002
+
+### List
+GET {{host}}/api/exams?page=1&recordsPerPage=20
+
+### Detail
+GET {{host}}/api/exams/{{id}}
+
+### CreateExam
+POST {{host}}/api/exams
+Content-Type: application/json
+
+{
+  "sectionId": "{{id}}",
+  "title": "Example",
+  "instructions": null,
+  "startsAt": "2027-01-01T10:00:00Z",
+  "deadline": "2027-01-01T12:00:00Z",
+  "durationMinutes": 60
+}
+
+### UpdateExam
+PUT {{host}}/api/exams/{{id}}
+Content-Type: application/json
+
+{
+  "version": "{{version}}",
+  "title": "Example",
+  "instructions": null,
+  "startsAt": "2027-01-01T10:00:00Z",
+  "deadline": "2027-01-01T12:00:00Z",
+  "durationMinutes": 60
+}
+
+### DeleteExam
+DELETE {{host}}/api/exams/{{id}}?version={{version}}
+
+### PublishExam
+POST {{host}}/api/exams/{{id}}/publish
+Content-Type: application/json
+
+{
+  "version": "{{version}}"
+}
+
+### CloseExam
+POST {{host}}/api/exams/{{id}}/close
+Content-Type: application/json
+
+{
+  "version": "{{version}}"
+}

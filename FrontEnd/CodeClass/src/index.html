@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <title>CodeClass · Computer Science</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0d1117" />
+    <script>
+      try {
+        const theme = localStorage.getItem('codeclass.theme');
+        document.documentElement.classList.toggle(
+          'dark',
+          theme ? theme === 'dark' : !matchMedia('(prefers-color-scheme: light)').matches,
+        );
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

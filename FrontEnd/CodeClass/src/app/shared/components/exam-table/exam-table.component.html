@@ -1,0 +1,75 @@
+<section aria-labelledby="exams-heading">
+  <div class="flex items-center justify-between pb-2 border-b border-borderSubtle">
+    <div class="flex items-center gap-2">
+      <h3
+        id="exams-heading"
+        class="text-sm font-semibold uppercase tracking-wider text-textSecondary font-mono"
+      >
+        Programming Exams
+      </h3>
+      <span
+        class="px-1.5 py-0.2 rounded bg-amber-950/60 border border-amber-800 text-statusWarning font-mono text-2xs font-semibold"
+      >
+        {{ openCount() }} Open now
+      </span>
+    </div>
+    <a class="text-xs text-accentBlue hover:underline" routerLink="/exams">View all exams →</a>
+  </div>
+
+  <div class="mt-2 overflow-x-auto">
+    <table class="data-table">
+      <thead>
+        <tr
+          class="border-b border-borderPrimary text-sm uppercase font-mono text-textMuted tracking-wider"
+        >
+          <th class="py-2 pr-4 font-semibold">Exam Title</th>
+          <th class="py-2 px-4 font-semibold">Course · Section</th>
+          <th class="py-2 px-4 font-semibold">Opens</th>
+          <th class="py-2 px-4 font-semibold">Deadline</th>
+          <th class="py-2 px-4 font-semibold">Status</th>
+          <th class="py-2 pl-4 text-right font-semibold">Action</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-borderSubtle">
+        @for (exam of exams(); track exam.id) {
+          <tr class="hover:bg-surfaceHover transition-colors">
+            <td class="py-2.5 pr-4">
+              <div class="font-medium text-textPrimary">{{ exam.title }}</div>
+              <div class="text-2xs text-textMuted font-mono">
+                {{ exam.durationMinutes }} min limit
+              </div>
+            </td>
+            <td class="py-2.5 px-4 font-mono text-textSecondary">
+              {{ sectionsData.courseName(exam.sectionId) }} ·
+              {{ sectionsData.sectionName(exam.sectionId) }}
+            </td>
+            <td class="py-2.5 px-4 font-mono text-textSecondary tabular">
+              {{ exam.startsAt | date: 'dd MMM HH:mm' }}
+            </td>
+            <td class="py-2.5 px-4 font-mono text-statusWarning tabular font-semibold">
+              {{ exam.deadline | date: 'dd MMM HH:mm' }}
+            </td>
+            <td class="py-2.5 px-4">
+              <span
+                class="font-mono text-xs"
+                [class.text-statusLive]="isOpen(exam)"
+                [class.text-textMuted]="!isOpen(exam)"
+              >
+                {{ status(exam) }}
+              </span>
+            </td>
+            <td class="py-2.5 pl-4 text-right">
+              <a [routerLink]="['/exams', exam.id]" class="text-accentBlue hover:underline text-sm">
+                {{ isOpen(exam) ? 'Open exam →' : 'View details →' }}
+              </a>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="py-8 text-textSecondary">No exams available.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

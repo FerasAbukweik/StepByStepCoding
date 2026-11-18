@@ -1,0 +1,78 @@
+# Log in using Auth.http first; these requests use the HTTP client cookie jar.
+@host = https://localhost:7147
+@id = 00000000-0000-0000-0000-000000000001
+@version = 00000000-0000-0000-0000-000000000002
+
+### List
+GET {{host}}/api/lectures?page=1&recordsPerPage=20
+
+### Detail
+GET {{host}}/api/lectures/{{id}}
+
+### CreateLecture
+POST {{host}}/api/lectures
+Content-Type: application/json
+
+{
+  "sectionId": "{{id}}",
+  "title": "Example",
+  "scheduledStart": "2027-01-01T10:00:00Z"
+}
+
+### UpdateLecture
+PUT {{host}}/api/lectures/{{id}}
+Content-Type: application/json
+
+{
+  "version": "{{version}}",
+  "title": "Example",
+  "scheduledStart": "2027-01-01T10:00:00Z"
+}
+
+### DeleteLecture
+DELETE {{host}}/api/lectures/{{id}}?version={{version}}
+
+### StartLecture
+POST {{host}}/api/lectures/{{id}}/start
+Content-Type: application/json
+
+{
+  "version": "{{version}}"
+}
+
+### EndLecture
+POST {{host}}/api/lectures/{{id}}/end
+Content-Type: application/json
+
+{
+  "version": "{{version}}"
+}
+
+
+### CreateLectureWithFile (one atomic save)
+POST {{host}}/api/lectures
+Content-Type: application/json
+
+{
+  "sectionId": "{{id}}",
+  "title": "Python introduction",
+  "scheduledStart": "2027-01-01T10:00:00Z",
+  "fileName": "main.py",
+  "language": 3,
+  "initialCode": "print('hello')"
+}
+
+### UpdateScheduledLectureAndFile (use current lecture and file versions)
+PUT {{host}}/api/lectures/{{id}}
+Content-Type: application/json
+
+{
+  "version": "{{version}}",
+  "title": "Python introduction",
+  "scheduledStart": "2027-01-01T10:00:00Z",
+  "fileId": "{{id}}",
+  "fileVersion": "{{version}}",
+  "fileName": "main.py",
+  "language": 3,
+  "initialCode": "print('updated')"
+}

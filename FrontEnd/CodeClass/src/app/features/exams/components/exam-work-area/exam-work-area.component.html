@@ -1,0 +1,234 @@
+<section class="space-y-5">
+  @if (attempt(); as attempt) {
+    <div class="panel sticky top-0 z-20 flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h2 class="text-lg font-semibold">
+          {{
+            manager()
+              ? studentName()
+              : active()
+                ? 'Your exam attempt'
+                : 'Your submissions & results'
+          }}
+        </h2>
+        <p class="mt-1 text-sm text-textSecondary">
+          Started {{ attempt.startedAt | date: 'medium' }} · Ends
+          {{ attempt.expiresAt | date: 'medium' }}
+        </p>
+      </div>
+      @if (active()) {
+        <div class="flex flex-wrap items-center gap-4">
+          <span class="font-mono text-lg" aria-label="Remaining time">{{ clock() }}</span>
+          <button
+            class="button-secondary"
+            [disabled]="saving() || syncRequired()"
+            (click)="confirm.set('finish')"
+          >
+            Finish attempt
+          </button>
+        </div>
+      } @else {
+        <span class="status-badge">
+          {{
+            attempt.status === 2 ? 'Submitted' : remaining() === 0 ? 'Time expired' : 'Read only'
+          }}
+        </span>
+      }
+    </div>
+    <div class="panel">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        @if (graded()) {
+          <p class="font-medium">Marks for viewed submissions: {{ score() }}</p>
+        } @else {
+          <p class="font-medium">Select a question to view its submission and mark.</p>
+        }
+        <p class="text-sm text-textSecondary">
+          {{ graded() }} graded among viewed submissions · {{ questionsData.total() }} questions
+        </p>
+      </div>
+      @if (graded() < submissions().length) {
+        <p class="mt-2 text-sm text-statusWarning">
+          Partial total. Some submissions are awaiting grading.
+        </p>
+      }
+    </div>
+  }
+
+  <label class="form-label block max-w-3xl">
+    Question
+    <select
+      class="form-input mt-2"
+      [ngModel]="question()?.id ?? ''"
+      (ngModelChange)="select($event)"
+      [disabled]="saving() || questionLoading() || syncRequired()"
+    >
+      <option value="" disabled>Select a question</option>
+      @for (question of questions(); track question.id) {
+        <option [value]="question.id">
+          {{ question.displayOrder + 1 }}. {{ question.title }} —
+          {{
+            submitted(question.id)
+              ? submitted(question.id)?.score === null
+                ? 'Submitted'
+                : 'Graded'
+              : 'Select to view'
+          }}
+        </option>
+      }
+    </select>
+  </label>
+  @if (questionsData.hasMore()) {
+    <button
+      class="button-secondary"
+      [disabled]="questionsData.loading() || saving()"
+      (click)="moreQuestions()"
+    >
+      {{ questionsData.loading() ? 'Loading…' : 'Load more questions' }}
+    </button>
+  }
+
+  @if (questionLoading()) {
+    <app-state-panel [loading]="true" />
+  } @else if (questionError()) {
+    <app-state-panel [message]="questionError()" (retry)="select(questions()[0].id)" />
+  } @else if (question(); as question) {
+    <article class="panel">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 class="text-lg font-semibold">{{ question.title }}</h2>
+        <span class="status-badge">{{ question.maxScore }} marks</span>
+      </div>
+      <app-problem-statement
+        class="mt-4 block"
+        [description]="question.description"
+        [image]="question.imagePath"
+      />
+    </article>
+
+    @if (attempt()) {
+      <section class="overflow-hidden rounded-xl border border-borderPrimary bg-surface">
+        <header
+          class="flex flex-wrap items-center justify-between gap-3 border-b border-borderPrimary p-4"
+        >
+          <div class="flex items-center gap-3">
+            <label class="form-label">
+              Language
+              <select
+                class="form-input mt-1"
+                [ngModel]="language()"
+                (ngModelChange)="changeLanguage(+$event)"
+                [disabled]="!editable()"
+              >
+                <option [ngValue]="1">C++</option>
+                <option [ngValue]="2">Java</option>
+                <option [ngValue]="3">Python</option>
+              </select>
+            </label>
+            <span class="text-sm text-textSecondary">
+              {{
+                submission()
+                  ? 'Submitted · Read only'
+                  : active()
+                    ? 'Draft · Not submitted'
+                    : 'No submission'
+              }}
+            </span>
+          </div>
+          <button class="button-secondary" (click)="download()">Download code</button>
+        </header>
+        <div class="flex min-h-[480px]">
+          <app-code-editor
+            [code]="code()"
+            [language]="languageName()"
+            [readOnly]="!editable()"
+            (changed)="edit($event.code)"
+          />
+        </div>
+        @if (editable()) {
+          <footer
+            class="flex flex-wrap items-center justify-between gap-3 border-t border-borderPrimary p-4"
+          >
+            <p class="max-w-xl text-sm text-textSecondary">
+              Drafts stay on this page until you leave. Submit each question once; submitted code
+              cannot be edited.
+            </p>
+            <button
+              class="button-primary"
+              [disabled]="!code().trim() || code().length > 100000 || saving()"
+              (click)="confirm.set('submit')"
+            >
+              Submit this question
+            </button>
+          </footer>
+        }
+      </section>
+
+      @if (submission(); as submission) {
+        <section class="panel">
+          @if (manager()) {
+            <form [formGroup]="form" (ngSubmit)="grade()" class="space-y-4">
+              <h3 class="text-lg font-semibold">Instructor evaluation</h3>
+              <label class="form-label max-w-xs">
+                Mark / {{ question.maxScore }}
+                <input
+                  class="form-input mt-2"
+                  type="number"
+                  formControlName="score"
+                  min="0"
+                  [max]="question.maxScore"
+                  step="0.01"
+                />
+              </label>
+              <label class="form-label">
+                Feedback
+                <span class="text-textMuted">(optional)</span>
+                <textarea
+                  class="form-input mt-2 min-h-28"
+                  formControlName="feedback"
+                  maxlength="8000"
+                ></textarea>
+              </label>
+              @if (form.invalid && form.touched) {
+                <p class="text-sm text-statusError" role="alert">
+                  Enter a mark between 0 and {{ question.maxScore }}.
+                </p>
+              }
+              <button class="button-primary" [disabled]="saving() || syncRequired()">
+                {{ saving() ? 'Saving…' : submission.score === null ? 'Save mark' : 'Update mark' }}
+              </button>
+            </form>
+          } @else {
+            <h3 class="text-lg font-semibold">
+              {{
+                submission.score === null
+                  ? 'Awaiting instructor grading'
+                  : 'Mark: ' + submission.score + ' / ' + question.maxScore
+              }}
+            </h3>
+            @if (submission.feedback) {
+              <p class="mt-3 whitespace-pre-wrap text-textSecondary">{{ submission.feedback }}</p>
+            }
+          }
+        </section>
+      }
+    }
+  }
+  @if (actionError()) {
+    <p class="text-statusError" role="alert">{{ actionError() }}</p>
+  }
+
+  @if (confirm(); as action) {
+    <app-confirm-dialog
+      [error]="actionError()"
+      [heading]="action === 'submit' ? 'Submit this question?' : 'Finish this attempt?'"
+      [message]="
+        action === 'submit'
+          ? 'Your code will be saved for instructor grading. You cannot edit or submit this question again.'
+          : 'You will no longer be able to submit answers. Any unsubmitted drafts will not be included.'
+      "
+      [label]="action === 'submit' ? 'Submit question' : 'Finish attempt'"
+      [busy]="saving()"
+      (closed)="confirm.set(null)"
+      (confirmed)="confirmAction()"
+    />
+  }
+</section>

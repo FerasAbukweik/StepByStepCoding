@@ -1,0 +1,8 @@
+# Sign in as Admin or Instructor using Auth.http first.
+@host = https://localhost:7147
+
+### Find students for enrollment (Admin or Instructor)
+GET {{host}}/api/users?role=Student&search=alex
+
+### Find instructors for section assignment (Admin only)
+GET {{host}}/api/users?role=Instructor&search=teacher

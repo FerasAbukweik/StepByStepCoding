@@ -1,0 +1,33 @@
+# Log in using Auth.http first; these requests use the HTTP client cookie jar.
+@host = https://localhost:7147
+@id = 00000000-0000-0000-0000-000000000001
+@version = 00000000-0000-0000-0000-000000000002
+
+### List
+GET {{host}}/api/sections?page=1&recordsPerPage=20
+
+### Detail
+GET {{host}}/api/sections/{{id}}
+
+### CreateSection
+POST {{host}}/api/sections
+Content-Type: application/json
+
+{
+  "courseId": "{{id}}",
+  "instructorId": "{{id}}",
+  "name": "Example"
+}
+
+### UpdateSection
+PUT {{host}}/api/sections/{{id}}
+Content-Type: application/json
+
+{
+  "version": "{{version}}",
+  "instructorId": "{{id}}",
+  "name": "Example"
+}
+
+### DeleteSection
+DELETE {{host}}/api/sections/{{id}}?version={{version}}

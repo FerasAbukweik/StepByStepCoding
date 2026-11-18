@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"outline-variant":"#414752","secondary-fixed-dim":"#b1c5ff","error":"#ffb4ab","secondary":"#b1c5ff","on-surface":"#dfe2eb","error-container":"#93000a","tertiary-fixed-dim":"#67df70","surface-container-high":"#262a31","surface-container-lowest":"#0a0e14","on-tertiary-container":"#004411","on-secondary":"#002c71","on-tertiary":"#00390d","secondary-fixed":"#dae2ff","on-surface-variant":"#c0c7d4","surface-bright":"#353940","on-error":"#690005","inverse-primary":"#0060aa","surface-tint":"#a2c9ff","primary-container":"#58a6ff","surface-dim":"#10141a","surface-container":"#1c2026","on-secondary-container":"#d1dcff","secondary-container":"#0059d4","surface-container-highest":"#31353c","primary-fixed":"#d3e4ff","tertiary":"#67df70","background":"#10141a","surface":"#10141a","primary":"#a2c9ff","tertiary-container":"#40ba51","inverse-on-surface":"#2d3137","inverse-surface":"#dfe2eb","outline":"#8b919d","on-secondary-fixed":"#001947","tertiary-fixed":"#83fc89","on-primary-fixed-variant":"#004882","on-tertiary-fixed-variant":"#005317","surface-variant":"#31353c","on-tertiary-fixed":"#002105","on-error-container":"#ffdad6","on-primary-container":"#003a6b","on-secondary-fixed-variant":"#00419f","surface-container-low":"#181c22","primary-fixed-dim":"#a2c9ff","on-primary-fixed":"#001c38","on-background":"#dfe2eb","on-primary":"#00315c"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"gutter":"0.5rem","space-lg":"1rem","space-xl":"1.5rem","margin-panel":"0.5rem","gutter-compact":"0.25rem","margin":"0.75rem","space-sm":"0.5rem","space-md":"0.75rem","space-xs":"0.25rem"},"fontFamily":{"headline-sm":["Geist"],"body-lg":["Geist"],"headline-md":["Geist"],"body-sm":["Geist"],"body-md":["Geist"],"label-sm":["Geist"],"headline-lg":["Geist"],"title-md":["Geist"],"code-md":["JetBrains Mono"],"label-md":["Geist"],"code-sm":["JetBrains Mono"]},"fontSize":{"headline-sm":["14px",{"lineHeight":"20px","letterSpacing":"-0.005em","fontWeight":"600"}],"body-lg":["14px",{"lineHeight":"20px","fontWeight":"400"}],"headline-md":["16px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"body-md":["13px",{"lineHeight":"18px","fontWeight":"400"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.02em","fontWeight":"500"}],"headline-lg":["20px",{"lineHeight":"28px","letterSpacing":"-0.015em","fontWeight":"600"}],"title-md":["13px",{"lineHeight":"18px","fontWeight":"600"}],"code-md":["13px",{"lineHeight":"20px","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"500"}],"code-sm":["12px",{"lineHeight":"18px","fontWeight":"400"}]}}}}</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col justify-between border-r border-outline-variant"><div class="flex flex-col h-full"><div class="h-14 px-space-md flex items-center justify-between border-b border-outline-variant"><div class="flex items-center gap-space-sm"><div class="w-6 h-6 rounded bg-secondary-container flex items-center justify-center"><span class="material-symbols-outlined text-primary text-[16px]">terminal</span></div><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight uppercase">CodeClass</span></div><span class="font-code-sm text-code-sm px-space-xs py-[2px] rounded bg-surface-container-high text-on-surface-variant">v2.4</span></div><nav class="p-space-xs flex flex-col gap-space-xs border-b border-outline-variant" data-active-classes="bg-surface-container-high text-on-surface border-l-2 border-primary font-medium"><a class="flex items-center gap-space-sm px-space-md h-8 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="home" href="#"><span class="material-symbols-outlined text-[18px]">home</span><span class="font-label-md text-label-md">Home</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-md h-8 rounded transition-colors bg-surface-container-high text-on-surface border-l-2 border-primary font-medium" data-path="my-courses" href="#"><span class="material-symbols-outlined text-[18px]">menu_book</span><span class="font-label-md text-label-md">My Courses</span></a><a class="flex items-center gap-space-sm px-space-md h-8 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="exams" href="#"><span class="material-symbols-outlined text-[18px]">timer</span><span class="font-label-md text-label-md">Exams</span></a><a class="flex items-center gap-space-sm px-space-md h-8 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="my-workspace" href="#"><span class="material-symbols-outlined text-[18px]">code</span><span class="font-label-md text-label-md">My Workspace</span></a></nav><div class="flex-1 flex flex-col min-h-0"><div class="px-space-md pt-space-md pb-space-xs flex items-center justify-between"><span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">My Lectures</span><span class="font-code-sm text-code-sm text-primary">Live</span></div><div class="flex-1 overflow-y-auto px-space-xs space-y-space-xs"><div class="px-space-sm py-space-xs rounded bg-surface-container border border-outline-variant"><div class="flex items-center justify-between"><span class="font-code-sm text-code-sm text-tertiary flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>Today 14:00</span><span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-tertiary-container text-on-tertiary-container">Live Now</span></div><div class="font-label-md text-label-md text-on-surface truncate mt-0.5">CS301: Distributed Systems</div><div class="font-body-sm text-body-sm text-on-surface-variant truncate">Lab 04 Execution Environment</div></div><div class="px-space-sm py-space-xs rounded bg-surface-container-low hover:bg-surface-container border border-transparent hover:border-outline-variant transition-colors"><div class="flex items-center justify-between"><span class="font-code-sm text-code-sm text-on-surface-variant">Today 16:30</span><span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container-highest text-on-surface-variant">In 2h</span></div><div class="font-label-md text-label-md text-on-surface truncate mt-0.5">CS204: Algorithms & Data</div><div class="font-body-sm text-body-sm text-on-surface-variant truncate">Lecture 12: Graph Traversal</div></div><div class="px-space-sm py-space-xs rounded bg-surface-container-low hover:bg-surface-container border border-transparent hover:border-outline-variant transition-colors"><div class="flex items-center justify-between"><span class="font-code-sm text-code-sm text-outline">Tomorrow 10:00</span><span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container-highest text-outline">Upcoming</span></div><div class="font-label-md text-label-md text-on-surface truncate mt-0.5">CS108: Systems Architecture</div><div class="font-body-sm text-body-sm text-on-surface-variant truncate">Assembly & Registers Recitation</div></div></div></div><div class="p-space-xs border-t border-outline-variant bg-surface-container-lowest"><div class="flex items-center justify-between px-space-sm py-space-xs"><div class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-tertiary"></span><span class="font-code-sm text-code-sm text-on-surface-variant">Kernel Node 01</span></div><span class="font-code-sm text-code-sm text-primary">98ms</span></div></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-14 bg-surface-container-low border-b border-outline-variant z-40 flex items-center justify-between px-space-md"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs font-label-md text-label-md"><span class="text-outline">CodeClass</span><span class="text-outline-variant">/</span><span class="text-outline">Student Portal</span><span class="text-outline-variant">/</span><span class="text-on-surface font-medium">Workspace Overview</span></div><div class="h-4 w-[1px] bg-outline-variant"></div><div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container-highest border border-outline-variant"><span class="material-symbols-outlined text-[14px] text-primary">school</span><span class="font-label-sm text-label-sm text-on-surface">Univ Engineering & CS</span></div></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs"><button class="h-8 px-space-sm rounded bg-surface-container-high hover:bg-surface-bright text-on-surface border border-outline-variant font-label-md text-label-md flex items-center gap-1.5 transition-colors"><span class="material-symbols-outlined text-[16px]">terminal</span><span>Quick Terminal</span></button><button class="h-8 w-8 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface-variant hover:text-on-surface border border-outline-variant flex items-center justify-center transition-colors"><span class="material-symbols-outlined text-[18px]">notifications</span></button></div><div class="h-5 w-[1px] bg-outline-variant"></div><div class="flex items-center gap-space-sm pl-space-xs"><div class="flex flex-col text-right"><span class="font-label-md text-label-md text-on-surface leading-tight">Rania Khalil</span><span class="font-code-sm text-code-sm text-on-surface-variant leading-tight">r.khalil@univ.edu</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-14 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- Interactive State Switcher Ribbon (Spec Preview Control) -->
+<div class="px-space-md py-space-xs bg-surface-container-lowest border-b border-outline-variant flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="font-code-sm text-code-sm text-outline uppercase tracking-wider">Spec State:</span>
+<div class="flex items-center gap-1 bg-surface-container rounded p-0.5 border border-outline-variant">
+<button class="px-2 py-1 rounded bg-secondary-container text-on-surface font-label-sm text-label-sm transition-colors" id="btn-default" onclick="switchState('default')">Screen 2: Default Viewer</button>
+<button class="px-2 py-1 rounded hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-colors" id="btn-modal-a" onclick="switchState('modal-a')">Modal A (First Copy)</button>
+<button class="px-2 py-1 rounded hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-colors" id="btn-modal-b" onclick="switchState('modal-b')">Modal B (Conflict)</button>
+<button class="px-2 py-1 rounded hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-colors" id="btn-state-saving" onclick="switchState('state-saving')">State 5: Saving</button>
+<button class="px-2 py-1 rounded hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-colors" id="btn-state-empty" onclick="switchState('state-empty')">State 6: Empty</button>
+<button class="px-2 py-1 rounded hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-colors" id="btn-state-skeleton" onclick="switchState('state-skeleton')">State 7: Skeleton</button>
+<button class="px-2 py-1 rounded hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-colors" id="btn-state-error" onclick="switchState('state-error')">State 8: Error</button>
+<button class="px-2 py-1 rounded hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-colors" id="btn-state-offline" onclick="switchState('state-offline')">State 9: Offline</button>
+<button class="px-2 py-1 rounded hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-colors" id="btn-state-denied" onclick="switchState('state-denied')">State 10: Denied</button>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="font-code-sm text-code-sm text-tertiary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+        Instructor Snapshot #1042-end
+      </span>
+<button class="px-2 py-1 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface-variant text-label-sm font-label-sm border border-outline-variant flex items-center gap-1" onclick="triggerToast()">
+<span class="material-symbols-outlined text-[14px]">done_all</span>
+        Test Toast
+      </button>
+</div>
+</div>
+<!-- Header Specification Area: Breadcrumb + Lecture Facts -->
+<section class="bg-surface-container-low border-b border-outline-variant px-space-xl py-space-lg">
+<!-- Breadcrumb trail -->
+<nav aria-label="Breadcrumb" class="flex items-center gap-space-xs font-label-sm text-label-sm text-outline mb-space-sm">
+<a class="hover:text-on-surface transition-colors" href="#">My Courses</a>
+<span class="text-outline-variant">/</span>
+<a class="hover:text-on-surface transition-colors" href="#">CS 201</a>
+<span class="text-outline-variant">/</span>
+<a class="hover:text-on-surface transition-colors" href="#">Saved lectures</a>
+<span class="text-outline-variant">/</span>
+<span class="text-on-surface font-medium">Stacks and Bounds Checking</span>
+</nav>
+<!-- Lecture facts 2-column tabular definition list -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md">
+<div>
+<div class="flex items-center gap-space-sm mb-1">
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant border border-outline-variant">CS 201 · Section B</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container-highest text-outline flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+            Ended
+          </span>
+<span class="font-label-sm text-label-sm text-primary flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">history_edu</span>
+            Instructor Snapshot
+          </span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Stacks and Bounds Checking</h1>
+</div>
+<!-- Plain Two-Column Definition Grid -->
+<dl class="grid grid-cols-2 sm:grid-cols-4 gap-x-space-xl gap-y-1 bg-surface-container-lowest p-space-sm rounded border border-outline-variant text-left">
+<div>
+<dt class="font-label-sm text-label-sm text-outline">Instructor</dt>
+<dd class="font-label-md text-label-md text-on-surface font-medium truncate">Dr. Lina Haddad</dd>
+</div>
+<div>
+<dt class="font-label-sm text-label-sm text-outline">Recorded Timestamp</dt>
+<dd class="font-code-sm text-code-sm text-on-surface tabular-nums">Tue 4 Nov 2026 · 11:03–12:41</dd>
+</div>
+<div>
+<dt class="font-label-sm text-label-sm text-outline">Language / Standard</dt>
+<dd class="font-code-sm text-code-sm text-primary">C++17 (gcc 11.2)</dd>
+</div>
+<div>
+<dt class="font-label-sm text-label-sm text-outline">Target Architecture</dt>
+<dd class="font-code-sm text-code-sm text-on-surface-variant">x86_64 Linux</dd>
+</div>
+</dl>
+</div>
+</section>
+<!-- Notification Scrim / Toast Placement -->
+<div class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-200 pointer-events-none" id="toast-container">
+<div class="flex items-center gap-3 bg-surface-container-highest border border-outline-variant text-on-surface px-4 py-3 rounded shadow-xl pointer-events-auto">
+<div class="w-5 h-5 rounded-full bg-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-on-tertiary-container font-bold">check</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Copied to My Workspace</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">4 files stashed in ~/cs201/stacks-bounds-check</span>
+</div>
+<a class="font-label-md text-label-md text-primary hover:underline ml-3 flex items-center gap-0.5" href="#">
+        Open workspace <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Main View Container for Dynamic States -->
+<div class="flex-1 flex flex-col p-space-md" id="state-workspace">
+<!-- DEFAULT STATE: SAVED BANNER + 2-PANE VIEWER -->
+<div class="flex flex-col gap-space-sm flex-1" id="view-default">
+<!-- New Saved-Content Banner (#1B222C, border #30363D) -->
+<div class="rounded border border-[#30363D] bg-[#1B222C] p-space-sm flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-start sm:items-center gap-space-sm">
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-sm text-code-sm text-[#8B949E] uppercase tracking-wide border border-outline-variant font-medium">Saved</span>
+<p class="font-body-md text-body-md text-on-surface leading-tight">
+            This is the instructor's code from the end of the lecture. It is not live.
+          </p>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="h-8 px-space-md rounded bg-[#2F6FEB] hover:bg-[#4A83F0] active:bg-[#2658BE] text-white font-label-md text-label-md flex items-center justify-center gap-1.5 transition-colors shadow-sm" onclick="openModal('modal-first-time')">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+<span>Copy to My Workspace</span>
+</button>
+</div>
+</div>
+<!-- Quiet explanatory sentence below banner -->
+<div class="px-space-xs flex items-center justify-between text-on-surface-variant">
+<span class="font-body-sm text-body-sm text-outline">
+          To run or edit this code, copy it to your workspace.
+        </span>
+<span class="font-code-sm text-code-sm text-outline">
+          Checksum: SHA256: 4f89d1...90ab
+        </span>
+</div>
+<!-- Code Workspace Shell (File Tree + Read-Only Splitter) -->
+<div class="flex-1 min-h-[580px] bg-[#0D1117] rounded border border-[#30363D] flex flex-col md:flex-row overflow-hidden">
+<!-- Left Side: Narrow File Tree -->
+<aside class="w-full md:w-56 bg-[#161B22] border-b md:border-b-0 md:border-r border-[#30363D] flex flex-col shrink-0">
+<!-- Pane Header -->
+<div class="h-8 px-space-sm bg-[#0D1117] border-b border-[#30363D] flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-[#8B949E] uppercase tracking-wider font-semibold">Instructor's saved code</span>
+<span class="font-code-sm text-code-sm text-outline">4 files</span>
+</div>
+<!-- Mobile Dropdown Selector (Active on Small screens) -->
+<div class="p-space-xs block md:hidden border-b border-[#30363D] bg-[#0B0F14]">
+<label class="sr-only" for="mobile-file-picker">Choose File</label>
+<div class="relative">
+<select class="w-full h-8 px-2 bg-surface-container border border-outline-variant text-on-surface font-code-sm text-code-sm rounded appearance-none pr-8" id="mobile-file-picker" onchange="switchFile(this.value)">
+<option value="main.cpp">Files: main.cpp (Selected)</option>
+<option value="stack.h">Files: stack.h</option>
+<option value="stack.cpp">Files: stack.cpp</option>
+<option value="input.txt">Files: input.txt</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-2 text-[16px] text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Desktop File List -->
+<nav class="hidden md:flex flex-col py-1 flex-1 overflow-y-auto">
+<button class="h-8 px-space-sm flex items-center gap-2 bg-[#1B2740] text-[#E6EDF3] border-l-2 border-[#2F6FEB] font-code-sm text-code-sm text-left transition-colors" id="file-main.cpp" onclick="switchFile('main.cpp')">
+<span class="material-symbols-outlined text-[16px] text-[#58A6FF]">data_object</span>
+<span class="truncate">main.cpp</span>
+</button>
+<button class="h-8 px-space-sm flex items-center gap-2 text-[#8B949E] hover:bg-[#1C232C] hover:text-[#E6EDF3] border-l-2 border-transparent font-code-sm text-code-sm text-left transition-colors" id="file-stack.h" onclick="switchFile('stack.h')">
+<span class="material-symbols-outlined text-[16px] text-outline">code</span>
+<span class="truncate">stack.h</span>
+</button>
+<button class="h-8 px-space-sm flex items-center gap-2 text-[#8B949E] hover:bg-[#1C232C] hover:text-[#E6EDF3] border-l-2 border-transparent font-code-sm text-code-sm text-left transition-colors" id="file-stack.cpp" onclick="switchFile('stack.cpp')">
+<span class="material-symbols-outlined text-[16px] text-outline">data_object</span>
+<span class="truncate">stack.cpp</span>
+</button>
+<button class="h-8 px-space-sm flex items-center gap-2 text-[#8B949E] hover:bg-[#1C232C] hover:text-[#E6EDF3] border-l-2 border-transparent font-code-sm text-code-sm text-left transition-colors" id="file-input.txt" onclick="switchFile('input.txt')">
+<span class="material-symbols-outlined text-[16px] text-outline">description</span>
+<span class="truncate">input.txt</span>
+</button>
+</nav>
+<!-- Distinction footer: Personal Workspace Reference -->
+<div class="p-space-sm bg-[#0B0F14] border-t border-[#30363D] mt-auto">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-sm text-label-sm text-outline">Workspace state</span>
+<span class="font-code-sm text-code-sm text-error">Unlinked</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              You are reading the baseline snapshot. Changes require stashing to My Workspace.
+            </p>
+</div>
+</aside>
+<!-- Right Side: Read-Only Code Viewer -->
+<main class="flex-1 flex flex-col bg-[#0B0F14] min-w-0">
+<!-- Editor Sub-Header: Tabs + Badges -->
+<header class="h-9 bg-[#161B22] border-b border-[#30363D] flex items-center justify-between px-space-sm shrink-0">
+<div class="flex items-center h-full">
+<!-- Active tab -->
+<div class="h-full px-space-md bg-[#0B0F14] border-t-2 border-[#2F6FEB] border-r border-[#30363D] flex items-center gap-2 text-[#E6EDF3]">
+<span class="material-symbols-outlined text-[15px] text-[#58A6FF]">code</span>
+<span class="font-code-sm text-code-sm font-medium" id="active-filename">main.cpp</span>
+<span class="material-symbols-outlined text-[14px] text-outline ml-1 opacity-70">lock</span>
+</div>
+</div>
+<!-- Language and Read-Only Tags -->
+<div class="flex items-center gap-space-xs">
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded bg-[#0D1117] text-[#8B949E] border border-[#30363D]">
+                C++17
+              </span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant border border-outline-variant flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[13px] text-outline">lock</span>
+                Read-only
+              </span>
+</div>
+</header>
+<!-- Code Canvas with Non-Wrapping Horizontal Scroll and Precise Line Numbers -->
+<div class="flex-1 flex overflow-x-auto overflow-y-auto font-code-md text-code-md leading-[20px] select-text">
+<!-- Line Number Gutter -->
+<div class="py-space-md pl-space-md pr-space-sm bg-[#0B0F14] text-[#484F58] text-right select-none border-r border-[#21262D] shrink-0 font-code-md">
+              01<br/>02<br/>03<br/>04<br/>05<br/>06<br/>07<br/>08<br/>09<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30
+            </div>
+<!-- Code Content Body -->
+<div class="py-space-md px-space-md text-[#E6EDF3] whitespace-pre font-code-md flex-1" id="code-content">
+<span class="text-[#FF7B72]">#include</span> <span class="text-[#A5D6FF]"><iostream></span>
+<span class="text-[#FF7B72]">#include</span> <span class="text-[#A5D6FF]"><cassert></span>
+<span class="text-[#FF7B72]">#include</span> <span class="text-[#A5D6FF]"><stdexcept></span>
+<span class="text-[#FF7B72]">#include</span> <span class="text-[#A5D6FF]">"stack.h"</span>
+<span class="text-[#8B949E]">// CS201 Lecture 14: Dynamic bounds verification with custom assertion triggers</span>
+<span class="text-[#FF7B72]">template</span> <<span class="text-[#FF7B72]">typename</span> <span class="text-[#FFA657]">T</span>>
+<span class="text-[#FF7B72]">class</span> <span class="text-[#FFA657]">SafeStack</span> {
+<span class="text-[#FF7B72]">private</span>:
+    <span class="text-[#FFA657]">T</span>* data;
+    <span class="text-[#79C0FF]">std</span>::<span class="text-[#79C0FF]">size_t</span> capacity;
+    <span class="text-[#79C0FF]">std</span>::<span class="text-[#79C0FF]">size_t</span> head;
+
+<span class="text-[#FF7B72]">public</span>:
+    <span class="text-[#D2A8FF]">SafeStack</span>(<span class="text-[#79C0FF]">std</span>::<span class="text-[#79C0FF]">size_t</span> initial_cap = <span class="text-[#79C0FF]">8</span>) 
+        : capacity(initial_cap), head(<span class="text-[#79C0FF]">0</span>) {
+        data = <span class="text-[#FF7B72]">new</span> <span class="text-[#FFA657]">T</span>[capacity];
+    }
+
+    ~<span class="text-[#D2A8FF]">SafeStack</span>() {
+        <span class="text-[#FF7B72]">delete</span>[] data;
+    }
+
+    <span class="text-[#FF7B72]">void</span> <span class="text-[#D2A8FF]">push</span>(<span class="text-[#FF7B72]">const</span> <span class="text-[#FFA657]">T</span>& value) {
+        <span class="text-[#8B949E]">// Check bounds before pushing</span>
+<span class="text-[#FF7B72]">if</span> (head >= capacity) {
+            <span class="text-[#FF7B72]">throw</span> <span class="text-[#79C0FF]">std</span>::<span class="text-[#D2A8FF]">out_of_range</span>(<span class="text-[#A5D6FF]">"SafeStack overflow: exceeded capacity"</span>);
+        }
+        data[head++] = value;
+    }
+
+    <span class="text-[#FFA657]">T</span> <span class="text-[#D2A8FF]">pop</span>() {
+        <span class="text-[#8B949E]">// Strict non-empty boundary invariant</span>
+<span class="text-[#D2A8FF]">assert</span>(head > <span class="text-[#79C0FF]">0</span> && <span class="text-[#A5D6FF]">"SafeStack underflow violation in pop()"</span>);
+        <span class="text-[#FF7B72]">return</span> data[--head];
+    }
+};</div>
+</div>
+<!-- Read-Only Status Bar Footer -->
+<footer class="h-6 bg-[#0D1117] border-t border-[#30363D] px-space-sm flex items-center justify-between text-outline font-code-sm text-code-sm">
+<div class="flex items-center gap-space-md">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">lock</span> Read-Only Mode (Snapshot)</span>
+<span>UTF-8</span>
+<span>LF</span>
+</div>
+<div class="flex items-center gap-space-md">
+<span>Ln 1, Col 1</span>
+<span>Spaces: 4</span>
+<span class="text-tertiary">C++ Clang 13.0</span>
+</div>
+</footer>
+</main>
+</div>
+</div>
+<!-- STATE 5: SAVED CODE STILL BEING STORED -->
+<div class="hidden flex-1 min-h-[500px] flex flex-col items-center justify-center bg-surface-container-lowest rounded border border-outline-variant p-space-xl text-center" id="view-state-saving">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center mb-space-md animate-pulse">
+<span class="material-symbols-outlined text-primary text-[24px] animate-spin">sync</span>
+</div>
+<div class="font-headline-md text-headline-md text-on-surface mb-1">Saving lecture workspace…</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-sm mb-space-md">
+        This usually takes a few seconds while snapshotting Dr. Haddad's kernel environment.
+      </p>
+<div class="w-48 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary animate-pulse w-3/4"></div>
+</div>
+</div>
+<!-- STATE 6: NO SAVED CODE -->
+<div class="hidden flex-1 min-h-[500px] flex flex-col items-center justify-center bg-surface-container-lowest rounded border border-outline-variant p-space-xl text-center" id="view-state-empty">
+<div class="w-10 h-10 rounded bg-surface-container flex items-center justify-center mb-space-sm text-outline">
+<span class="material-symbols-outlined text-[24px]">folder_off</span>
+</div>
+<p class="font-body-md text-body-md text-outline">
+        No code was saved for this lecture.
+      </p>
+</div>
+<!-- STATE 7: LOADING SKELETON -->
+<div class="hidden flex-1 min-h-[580px] bg-[#0D1117] rounded border border-[#30363D] flex flex-col md:flex-row overflow-hidden animate-pulse" id="view-state-skeleton">
+<!-- Skeleton File Tree -->
+<div class="w-56 bg-[#161B22] border-r border-[#30363D] p-space-sm space-y-3">
+<div class="h-4 bg-surface-container rounded w-3/4"></div>
+<div class="h-6 bg-surface-container rounded w-full"></div>
+<div class="h-6 bg-surface-container rounded w-5/6"></div>
+<div class="h-6 bg-surface-container rounded w-4/6"></div>
+<div class="h-6 bg-surface-container rounded w-full"></div>
+</div>
+<!-- Skeleton Code Viewer -->
+<div class="flex-1 bg-[#0B0F14] flex flex-col">
+<div class="h-9 bg-[#161B22] border-b border-[#30363D] px-space-sm flex items-center gap-2">
+<div class="h-5 w-24 bg-surface-container rounded"></div>
+<div class="h-5 w-16 bg-surface-container rounded"></div>
+</div>
+<div class="p-space-md space-y-2.5">
+<div class="h-4 bg-surface-container rounded w-2/5"></div>
+<div class="h-4 bg-surface-container rounded w-3/5"></div>
+<div class="h-4 bg-surface-container rounded w-1/4"></div>
+<div class="h-4 bg-surface-container rounded w-4/5"></div>
+<div class="h-4 bg-surface-container rounded w-3/4"></div>
+<div class="h-4 bg-surface-container rounded w-2/3"></div>
+<div class="h-4 bg-surface-container rounded w-1/2"></div>
+</div>
+</div>
+</div>
+<!-- STATE 8: ERROR -->
+<div class="hidden flex-1 min-h-[500px] flex flex-col items-center justify-center bg-surface-container-lowest rounded border border-outline-variant p-space-xl text-center" id="view-state-error">
+<div class="w-10 h-10 rounded bg-error-container text-on-error-container flex items-center justify-center mb-space-sm">
+<span class="material-symbols-outlined text-[20px]">warning</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface mb-1">Couldn't load the saved code.</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-sm mb-space-md">
+        An error occurred while streaming the snapshot repository from server cluster 01.
+      </p>
+<button class="h-8 px-space-md rounded bg-[#161B22] hover:bg-[#1C232C] text-[#E6EDF3] border border-[#30363D] font-label-md text-label-md flex items-center gap-1.5 transition-colors" onclick="switchState('default')">
+<span class="material-symbols-outlined text-[15px]">refresh</span>
+<span>Try again</span>
+</button>
+</div>
+<!-- STATE 9: OFFLINE / CONNECTION LOST -->
+<div class="hidden flex-1 flex flex-col gap-space-sm" id="view-state-offline">
+<div class="rounded bg-surface-container-high border border-outline-variant p-space-sm flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-outline text-[18px]">wifi_off</span>
+<span class="font-body-md text-body-md text-on-surface">You're offline. Code already loaded is still readable.</span>
+</div>
+<button class="h-8 px-space-md rounded bg-surface-container-highest text-outline font-label-md text-label-md cursor-not-allowed opacity-60" disabled="">
+          Copy to My Workspace (Requires connection)
+        </button>
+</div>
+<!-- Cached view of code -->
+<div class="p-space-md rounded bg-[#0B0F14] border border-[#30363D] font-code-sm text-code-sm text-on-surface-variant whitespace-pre">
+// Cached snapshot view (Network unreachable)
+#include <iostream>
+// All files preserved locally in cache memory.
+      </div>
+</div>
+<!-- STATE 10: ACCESS DENIED -->
+<div class="hidden flex-1 min-h-[500px] flex flex-col items-center justify-center bg-surface-container-lowest rounded border border-outline-variant p-space-xl text-center" id="view-state-denied">
+<div class="w-10 h-10 rounded bg-surface-container flex items-center justify-center mb-space-sm text-outline">
+<span class="material-symbols-outlined text-[20px]">lock_person</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface mb-1">You don't have access to this page.</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-sm mb-space-md">
+        This lecture code belongs to CS 201 Section B. Your account is not currently enrolled in this section.
+      </p>
+<a class="h-8 px-space-md rounded bg-primary text-on-primary font-label-md text-label-md flex items-center gap-1.5 transition-colors" href="#">
+<span class="material-symbols-outlined text-[15px]">home</span>
+<span>Go to my home</span>
+</a>
+</div>
+</div>
+<!-- MODAL VARIANT A: First-time copy -->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" id="modal-first-time">
+<div class="w-full max-w-md bg-[#161B22] border border-[#30363D] rounded shadow-2xl overflow-hidden flex flex-col">
+<header class="px-space-md py-space-sm bg-[#0D1117] border-b border-[#30363D] flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface">Copy to My Workspace</span>
+<button class="text-outline hover:text-on-surface" onclick="closeModal('modal-first-time')">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</header>
+<div class="p-space-md flex flex-col gap-space-sm">
+<p class="font-title-md text-title-md text-on-surface">Copy these 3 files to your workspace?</p>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          This creates an independent personal copy in My Workspace. The instructor's saved lecture will not change.
+        </p>
+<div class="bg-[#0B0F14] p-space-xs rounded border border-[#30363D] font-code-sm text-code-sm text-on-surface-variant space-y-1">
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-[14px] text-primary">add</span> main.cpp</div>
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-[14px] text-primary">add</span> stack.h</div>
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-[14px] text-primary">add</span> stack.cpp</div>
+</div>
+</div>
+<footer class="px-space-md py-space-sm bg-[#0D1117] border-t border-[#30363D] flex items-center justify-end gap-space-sm">
+<button class="h-8 px-space-md rounded bg-[#161B22] hover:bg-[#1C232C] text-[#E6EDF3] border border-[#30363D] font-label-md text-label-md" onclick="closeModal('modal-first-time')">
+          Cancel
+        </button>
+<button class="h-8 px-space-md rounded bg-[#2F6FEB] hover:bg-[#4A83F0] text-white font-label-md text-label-md" onclick="executeCopy('modal-first-time')">
+          Copy to My Workspace
+        </button>
+</footer>
+</div>
+</div>
+<!-- MODAL VARIANT B: Conflict with existing workspace copy -->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" id="modal-conflict">
+<div class="w-full max-w-md bg-[#161B22] border border-[#30363D] rounded shadow-2xl overflow-hidden flex flex-col">
+<header class="px-space-md py-space-sm bg-[#0D1117] border-b border-[#30363D] flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-error">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Existing Workspace Copy Found</span>
+</div>
+<button class="text-outline hover:text-on-surface" onclick="closeModal('modal-conflict')">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</header>
+<div class="p-space-md flex flex-col gap-space-sm">
+<p class="font-title-md text-title-md text-on-surface">You already have a workspace copy of this lecture. Copying again will replace it.</p>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Your current copy was modified yesterday at 18:22. Replacing it will overwrite local edits.
+        </p>
+<div class="p-space-sm rounded bg-[#281014] border border-error/30 text-error font-body-sm text-body-sm flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] shrink-0 mt-0.5">error_outline</span>
+<span>Never overwrite silently. Choose "Keep both" to create a branched version without data loss.</span>
+</div>
+</div>
+<footer class="px-space-md py-space-sm bg-[#0D1117] border-t border-[#30363D] flex items-center justify-end gap-space-sm">
+<button class="h-8 px-space-sm rounded bg-[#161B22] hover:bg-[#1C232C] text-[#E6EDF3] border border-[#30363D] font-label-md text-label-md" onclick="closeModal('modal-conflict')">
+          Cancel
+        </button>
+<button class="h-8 px-space-sm rounded bg-surface-container-high hover:bg-surface-bright text-on-surface border border-outline-variant font-label-md text-label-md" onclick="executeCopy('modal-conflict', 'both')">
+          Keep both (Copy 2)
+        </button>
+<button class="h-8 px-space-md rounded bg-[#2F6FEB] hover:bg-[#4A83F0] text-white font-label-md text-label-md" onclick="executeCopy('modal-conflict', 'replace')">
+          Replace my copy
+        </button>
+</footer>
+</div>
+</div>
+<!-- Interactive Logic for State Transitions and Visual Verification -->
+<script>
+    const fileContents = {
+      'main.cpp': `<span class="text-[#FF7B72]">#include</span> <span class="text-[#A5D6FF]"><iostream></span>
+<span class="text-[#FF7B72]">#include</span> <span class="text-[#A5D6FF]"><cassert></span>
+<span class="text-[#FF7B72]">#include</span> <span class="text-[#A5D6FF]"><stdexcept></span>
+<span class="text-[#FF7B72]">#include</span> <span class="text-[#A5D6FF]">"stack.h"</span>
+
+<span class="text-[#8B949E]">// CS201 Lecture 14: Dynamic bounds verification with custom assertion triggers</span>
+<span class="text-[#FF7B72]">template</span> <<span class="text-[#FF7B72]">typename</span> <span class="text-[#FFA657]">T</span>>
+<span class="text-[#FF7B72]">class</span> <span class="text-[#FFA657]">SafeStack</span> {
+<span class="text-[#FF7B72]">private</span>:
+    <span class="text-[#FFA657]">T</span>* data;
+    <span class="text-[#79C0FF]">std</span>::<span class="text-[#79C0FF]">size_t</span> capacity;
+    <span class="text-[#79C0FF]">std</span>::<span class="text-[#79C0FF]">size_t</span> head;
+
+<span class="text-[#FF7B72]">public</span>:
+    <span class="text-[#D2A8FF]">SafeStack</span>(<span class="text-[#79C0FF]">std</span>::<span class="text-[#79C0FF]">size_t</span> initial_cap = <span class="text-[#79C0FF]">8</span>) 
+        : capacity(initial_cap), head(<span class="text-[#79C0FF]">0</span>) {
+        data = <span class="text-[#FF7B72]">new</span> <span class="text-[#FFA657]">T</span>[capacity];
+    }
+
+    ~<span class="text-[#D2A8FF]">SafeStack</span>() {
+        <span class="text-[#FF7B72]">delete</span>[] data;
+    }
+
+    <span class="text-[#FF7B72]">void</span> <span class="text-[#D2A8FF]">push</span>(<span class="text-[#FF7B72]">const</span> <span class="text-[#FFA657]">T</span>& value) {
+        <span class="text-[#8B949E]">// Check bounds before pushing</span>
+        <span class="text-[#FF7B72]">if</span> (head >= capacity) {
+            <span class="text-[#FF7B72]">throw</span> <span class="text-[#79C0FF]">std</span>::<span class="text-[#D2A8FF]">out_of_range</span>(<span class="text-[#A5D6FF]">"SafeStack overflow: exceeded capacity"</span>);
+        }
+        data[head++] = value;
+    }
+
+    <span class="text-[#FFA657]">T</span> <span class="text-[#D2A8FF]">pop</span>() {
+        <span class="text-[#8B949E]">// Strict non-empty boundary invariant</span>
+        <span class="text-[#D2A8FF]">assert</span>(head > <span class="text-[#79C0FF]">0</span> && <span class="text-[#A5D6FF]">"SafeStack underflow violation in pop()"</span>);
+        <span class="text-[#FF7B72]">return</span> data[--head];
+    }
+};`,
+      'stack.h': `<span class="text-[#FF7B72]">#ifndef</span> STACK_H
+<span class="text-[#FF7B72]">#define</span> STACK_H
+
+<span class="text-[#FF7B72]">#include</span> <span class="text-[#A5D6FF]"><cstddef></span>
+
+<span class="text-[#FF7B72]">template</span> <<span class="text-[#FF7B72]">typename</span> <span class="text-[#FFA657]">T</span>>
+<span class="text-[#FF7B72]">class</span> <span class="text-[#FFA657]">SafeStack</span>;
+
+<span class="text-[#FF7B72]">#endif</span> <span class="text-[#8B949E]">// STACK_H</span>`,
+      'stack.cpp': `<span class="text-[#FF7B72]">#include</span> <span class="text-[#A5D6FF]">"stack.h"</span>
+<span class="text-[#8B949E]">// Template definitions are header-inlined for standard compiler expansion</span>`,
+      'input.txt': `8
+42 17 99 104 22 56 12 7`
+    };
+
+    function switchFile(filename) {
+      document.getElementById('active-filename').innerText = filename;
+      document.getElementById('code-content').innerHTML = fileContents[filename] || '// Empty file';
+      
+      const files = ['main.cpp', 'stack.h', 'stack.cpp', 'input.txt'];
+      files.forEach(f => {
+        const el = document.getElementById('file-' + f);
+        if (el) {
+          if (f === filename) {
+            el.className = 'h-8 px-space-sm flex items-center gap-2 bg-[#1B2740] text-[#E6EDF3] border-l-2 border-[#2F6FEB] font-code-sm text-code-sm text-left transition-colors';
+          } else {
+            el.className = 'h-8 px-space-sm flex items-center gap-2 text-[#8B949E] hover:bg-[#1C232C] hover:text-[#E6EDF3] border-l-2 border-transparent font-code-sm text-code-sm text-left transition-colors';
+          }
+        }
+      });
+      const picker = document.getElementById('mobile-file-picker');
+      if (picker) picker.value = filename;
+    }
+
+    function switchState(stateName) {
+      const views = ['default', 'state-saving', 'state-empty', 'state-skeleton', 'state-error', 'state-offline', 'state-denied'];
+      views.forEach(v => {
+        const el = document.getElementById('view-' + v);
+        if (el) el.classList.add('hidden');
+      });
+
+      const buttons = ['btn-default', 'btn-modal-a', 'btn-modal-b', 'btn-state-saving', 'btn-state-empty', 'btn-state-skeleton', 'btn-state-error', 'btn-state-offline', 'btn-state-denied'];
+      buttons.forEach(b => {
+        const btn = document.getElementById(b);
+        if (btn) {
+          btn.className = 'px-2 py-1 rounded hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-colors';
+        }
+      });
+
+      const activeBtn = document.getElementById('btn-' + stateName);
+      if (activeBtn) {
+        activeBtn.className = 'px-2 py-1 rounded bg-secondary-container text-on-surface font-label-sm text-label-sm transition-colors';
+      }
+
+      if (stateName === 'modal-a') {
+        document.getElementById('view-default').classList.remove('hidden');
+        openModal('modal-first-time');
+      } else if (stateName === 'modal-b') {
+        document.getElementById('view-default').classList.remove('hidden');
+        openModal('modal-conflict');
+      } else {
+        closeModal('modal-first-time');
+        closeModal('modal-conflict');
+        const target = document.getElementById('view-' + stateName) || document.getElementById('view-default');
+        if (target) target.classList.remove('hidden');
+      }
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function executeCopy(modalId, mode) {
+      closeModal(modalId);
+      triggerToast();
+    }
+
+    function triggerToast() {
+      const toast = document.getElementById('toast-container');
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 4000);
+    }
+  </script>
+</div></main></div></body></html>

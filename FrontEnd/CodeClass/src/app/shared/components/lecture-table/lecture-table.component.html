@@ -1,0 +1,88 @@
+<section aria-labelledby="today-heading">
+  <div class="flex items-center justify-between pb-2 border-b border-borderSubtle">
+    <h3
+      id="today-heading"
+      class="text-sm font-semibold uppercase tracking-wider text-textSecondary font-mono"
+    >
+      {{ title() }}
+    </h3>
+    <span class="text-xs text-textMuted font-mono tabular">{{ lectures().length }} lectures</span>
+  </div>
+
+  <div class="mt-2 overflow-x-auto">
+    <table class="data-table">
+      <thead>
+        <tr
+          class="border-b border-borderPrimary text-sm uppercase font-mono text-textMuted tracking-wider"
+        >
+          <th class="py-2 pr-4 font-semibold">Time</th>
+          <th class="py-2 px-4 font-semibold">Course</th>
+          <th class="py-2 px-4 font-semibold">Lecture</th>
+          <th class="py-2 px-4 font-semibold">Instructor</th>
+          <th class="py-2 px-4 font-semibold">Status</th>
+          <th class="py-2 pl-4 text-right font-semibold">Action</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-borderSubtle">
+        @for (lecture of lectures(); track lecture.id) {
+          <tr
+            class="hover:bg-surfaceHover transition-colors"
+            [class.live-row-bg]="lecture.status === 2"
+          >
+            <td class="py-2.5 pr-4 font-mono text-textMuted tabular">
+              {{ lecture.scheduledStart | date: 'EEE HH:mm' }}
+            </td>
+            <td class="py-2.5 px-4 font-mono text-textSecondary">
+              {{ sectionsData.courseName(lecture.sectionId) }}
+            </td>
+            <td class="py-2.5 px-4 font-medium text-textPrimary">
+              {{ lecture.title }}
+            </td>
+            <td class="py-2.5 px-4 text-textSecondary">
+              {{ sectionsData.instructorName(lecture.sectionId) }}
+            </td>
+            <td class="py-2.5 px-4">
+              <app-lecture-status [status]="lecture.status" />
+            </td>
+            <td class="py-2.5 pl-4 text-right">
+              <div class="flex flex-wrap items-center justify-end gap-3">
+                @if (lecture.fileId && (lecture.status !== 1 || auth.canTeach())) {
+                  <a
+                    [routerLink]="['/lectures', lecture.id]"
+                    class="text-accentBlue hover:underline"
+                  >
+                    {{ lecture.status === 3 ? 'Saved code' : 'Open classroom' }} →
+                  </a>
+                }
+                @if (manage()) {
+                  @if (lecture.status === 1) {
+                    <button class="button-secondary" (click)="edit.emit(lecture)">
+                      {{ lecture.fileId ? 'Edit' : 'Set up file' }}
+                    </button>
+                    <button
+                      class="button-secondary text-statusError"
+                      (click)="remove.emit(lecture)"
+                    >
+                      Delete
+                    </button>
+                  }
+                  @if (lecture.status !== 3 && lecture.fileId) {
+                    <button class="button-secondary" (click)="changeStatus.emit(lecture)">
+                      {{ lecture.status === 1 ? 'Start' : 'End' }}
+                    </button>
+                  }
+                } @else if (!lecture.fileId || lecture.status === 1) {
+                  <span class="text-textMuted">Available shortly</span>
+                }
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="py-8 text-textSecondary">No lectures to show.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

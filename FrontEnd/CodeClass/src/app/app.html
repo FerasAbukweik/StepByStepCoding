@@ -1,0 +1,13 @@
+<router-outlet />
+
+<app-toasts />
+
+@if (dialogs.confirmation(); as dialog) {
+  <app-confirm-dialog
+    [heading]="dialog.heading"
+    [message]="dialog.message"
+    [label]="dialog.label ?? 'Confirm'"
+    (closed)="dialogs.resolve(false)"
+    (confirmed)="dialogs.resolve(true)"
+  />
+}

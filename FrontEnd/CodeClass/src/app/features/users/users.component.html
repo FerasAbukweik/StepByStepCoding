@@ -1,0 +1,94 @@
+<div class="page-container">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">CodeClass / Users</p>
+      <h1>Create an account</h1>
+      <p class="page-description">Add an account without signing out of your current session.</p>
+    </div>
+  </header>
+  <section class="panel max-w-2xl">
+    @if (created()) {
+      <p
+        class="mb-5 rounded-lg border border-statusLive bg-statusLiveBg p-4 text-statusLive"
+        role="status"
+      >
+        Account created for {{ created() }}. You can now assign this user to a section.
+      </p>
+    }
+    <form [formGroup]="form" (ngSubmit)="save()" class="space-y-5">
+      <label class="form-label">
+        Full name
+        <input
+          class="form-input mt-2"
+          formControlName="fullName"
+          autocomplete="name"
+          maxlength="250"
+        />
+      </label>
+      <label class="form-label">
+        Email
+        <input
+          class="form-input mt-2"
+          type="email"
+          formControlName="email"
+          autocomplete="off"
+          maxlength="256"
+        />
+      </label>
+      <label class="form-label">
+        Password
+        <input
+          class="form-input mt-2"
+          type="password"
+          formControlName="password"
+          autocomplete="new-password"
+          maxlength="128"
+        />
+      </label>
+      <p class="text-sm text-textSecondary">
+        Use at least 8 characters with uppercase and lowercase letters, a number, and a symbol.
+      </p>
+      <fieldset class="space-y-3 rounded-lg border border-borderPrimary p-4">
+        <legend class="px-2 font-medium">Roles</legend>
+        @if (auth.hasRole('Admin')) {
+          <label class="flex items-start gap-3">
+            <input
+              type="checkbox"
+              formControlName="instructor"
+              class="mt-1 h-4 w-4 accent-accentBlue"
+            />
+            <span>
+              Instructor
+              <span class="mt-1 block text-sm text-textSecondary">
+                Manage assigned sections, lectures, exams and grading.
+              </span>
+            </span>
+          </label>
+        }
+        <label class="flex items-start gap-3">
+          <input type="checkbox" formControlName="student" class="mt-1 h-4 w-4 accent-accentBlue" />
+          <span>
+            Student
+            <span class="mt-1 block text-sm text-textSecondary">
+              Attend enrolled sections and submit exam answers.
+            </span>
+          </span>
+        </label>
+      </fieldset>
+      @if ((form.invalid && form.touched) || roleError()) {
+        <p class="text-sm text-statusError" role="alert">
+          Complete the account details and select at least one role.
+        </p>
+      }
+      @if (service.actionError()) {
+        <p class="text-sm text-statusError" role="alert">{{ service.actionError() }}</p>
+      }
+      <footer class="flex flex-wrap items-center justify-between gap-3 pt-2">
+        <a routerLink="/courses" class="text-accentBlue">Manage course sections →</a>
+        <button class="button-primary" [disabled]="service.saving()">
+          {{ service.saving() ? 'Creating…' : 'Create account' }}
+        </button>
+      </footer>
+    </form>
+  </section>
+</div>

@@ -1,0 +1,104 @@
+<div class="min-h-dvh bg-app flex flex-col">
+  <div class="h-14 px-6 border-b border-borderPrimary flex items-center justify-between">
+    <span class="font-mono font-semibold">
+      CodeClass
+      <span class="text-textMuted font-normal ml-2 text-xs">/ Account access</span>
+    </span>
+    <button class="icon-button" (click)="theme.toggle()" aria-label="Change color theme">
+      <app-icon name="light_mode" />
+    </button>
+  </div>
+  <main class="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 sm:py-14">
+    <div class="w-full max-w-md">
+      <div class="mb-7 text-center">
+        <div class="font-semibold text-2xl font-mono tracking-tight">CodeClass</div>
+        <div class="text-textSecondary text-sm mt-2">Department of Computer Science</div>
+      </div>
+      <div class="w-full bg-pane border border-border rounded-lg p-6 shadow-sm sm:p-8">
+        <div class="mb-5">
+          <h1 class="text-3xl font-semibold text-text-primary tracking-tight">Sign in</h1>
+          <p class="text-text-secondary text-base mt-2">Use your university account.</p>
+        </div>
+
+        <form autocomplete="off" class="space-y-5" [formGroup]="form" (ngSubmit)="submit()">
+          @if (expired()) {
+            <div
+              class="border border-accentBlue/40 bg-accentSelectedBg text-focusOutline text-xs p-3"
+            >
+              Your session expired. Sign in again to continue.
+            </div>
+          }
+
+          <div>
+            <label class="block text-sm font-medium text-text-primary mb-1.5" for="email">
+              University email
+            </label>
+            <input
+              class="w-full bg-editor border border-border rounded-[4px] px-3 py-3 text-base text-text-primary placeholder:text-text-muted focus-ring"
+              id="email"
+              type="email"
+              formControlName="email"
+              autocomplete="off"
+              [readOnly]="loading()"
+            />
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-sm font-medium text-text-primary" for="password">
+                Password
+              </label>
+            </div>
+            <div class="relative flex items-center focus-ring-within rounded-[4px]">
+              <input
+                class="w-full bg-editor border border-border rounded-[4px] px-3 py-3 pr-14 text-base text-text-primary placeholder:text-text-muted focus:outline-none"
+                id="password"
+                [type]="showPassword() ? 'text' : 'password'"
+                formControlName="password"
+                autocomplete="off"
+                [readOnly]="loading()"
+              />
+              <button
+                type="button"
+                class="absolute right-2 text-sm text-text-secondary hover:text-text-primary font-medium px-1.5 py-0.5 rounded focus-ring"
+                (click)="showPassword.update(toggle)"
+              >
+                {{ showPassword() ? 'Hide' : 'Show' }}
+              </button>
+            </div>
+            <div class="mt-1.5">
+              <a class="text-sm text-btn-primary hover:underline" routerLink="/account-help">
+                Forgot password?
+              </a>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-btn-primary hover:bg-btn-primary-hover text-white font-medium text-base min-h-12 py-3 px-4 rounded-[4px] transition-colors focus-ring"
+            [disabled]="loading()"
+          >
+            {{ loading() ? 'Signing in…' : 'Sign in' }}
+          </button>
+          @if (form.invalid && form.touched) {
+            <p class="text-statusError text-xs">Enter a valid email address and your password.</p>
+          }
+        </form>
+
+        <div class="mt-6 pt-4 border-t border-subtle-divider text-sm text-text-secondary space-y-1">
+          <p>Accounts are created by your department administrator.</p>
+          <p>
+            <a class="text-btn-primary hover:underline" routerLink="/account-help">
+              Need help signing in?
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer
+    class="border-t border-borderSubtle px-6 py-4 text-xs text-center text-textMuted font-mono"
+  >
+    CodeClass · Computer Science learning environment
+  </footer>
+</div>

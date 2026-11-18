@@ -1,0 +1,76 @@
+<div class="page-container">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">CodeClass / Account</p>
+      <h1>My account</h1>
+      <p class="page-description">Your profile and sign-in security.</p>
+    </div>
+  </header>
+  <div class="grid items-start gap-6 lg:grid-cols-[minmax(260px,1fr)_minmax(0,2fr)]">
+    <section class="panel">
+      <h2 class="text-lg font-semibold">{{ auth.user()?.fullName }}</h2>
+      <p class="mt-2 break-all text-textSecondary">{{ auth.user()?.email }}</p>
+      <div class="mt-5 flex flex-wrap gap-2">
+        @for (role of auth.user()?.roles; track role) {
+          <span class="status-badge">{{ role }}</span>
+        }
+      </div>
+    </section>
+    <section class="panel">
+      <h2 class="text-lg font-semibold">Change password</h2>
+      <p class="mt-2 text-sm text-textSecondary">
+        After changing your password, sign in again using the new one.
+      </p>
+      <form [formGroup]="form" (ngSubmit)="save()" class="mt-6 space-y-5">
+        <label class="form-label">
+          Current password
+          <input
+            class="form-input mt-2"
+            type="password"
+            formControlName="currentPassword"
+            autocomplete="current-password"
+            maxlength="128"
+          />
+        </label>
+        <label class="form-label">
+          New password
+          <input
+            class="form-input mt-2"
+            type="password"
+            formControlName="newPassword"
+            autocomplete="new-password"
+            maxlength="128"
+          />
+        </label>
+        <p class="text-sm text-textSecondary">
+          Use at least 8 characters with uppercase and lowercase letters, a number, and a symbol.
+        </p>
+        <label class="form-label">
+          Confirm new password
+          <input
+            class="form-input mt-2"
+            type="password"
+            formControlName="confirmation"
+            autocomplete="new-password"
+            maxlength="128"
+          />
+        </label>
+        @if (form.invalid && form.touched) {
+          <p class="text-sm text-statusError" role="alert">
+            {{
+              form.hasError('mismatch')
+                ? 'The new passwords must match.'
+                : 'Complete all password fields with valid values.'
+            }}
+          </p>
+        }
+        @if (auth.passwordError()) {
+          <p class="text-sm text-statusError" role="alert">{{ auth.passwordError() }}</p>
+        }
+        <button class="button-primary" [disabled]="auth.passwordSaving()">
+          {{ auth.passwordSaving() ? 'Updating…' : 'Update password' }}
+        </button>
+      </form>
+    </section>
+  </div>
+</div>

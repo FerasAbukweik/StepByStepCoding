@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeClass — Sign In & Account Access States</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          surface: '#10141a',
+          'surface-dim': '#10141a',
+          'surface-bright': '#353940',
+          'surface-container-lowest': '#0a0e14',
+          'surface-container-low': '#161b22',
+          'surface-container': '#181c22',
+          'surface-container-high': '#1c232c',
+          'surface-container-highest': '#252b35',
+          app: '#0D1117',
+          editor: '#0B0F14',
+          pane: '#161B22',
+          'hover-row': '#1C232C',
+          border: '#30363D',
+          'subtle-divider': '#21262D',
+          'text-primary': '#E6EDF3',
+          'text-secondary': '#8B949E',
+          'text-muted': '#6E7681',
+          'btn-primary': '#2F6FEB',
+          'btn-primary-hover': '#4A83F0',
+          'focus-outline': '#58A6FF',
+          'status-live': '#3FB950',
+          'status-warning': '#D29922',
+          'status-error': '#F85149',
+        },
+        fontFamily: {
+          sans: ['Geist', 'Inter', '-apple-system', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'monospace'],
+        },
+        fontSize: {
+          'ui-11': ['11px', '14px'],
+          'ui-12': ['12px', '16px'],
+          'ui-13': ['13px', '18px'],
+          'ui-14': ['14px', '20px'],
+          'ui-16': ['16px', '22px'],
+          'ui-20': ['20px', '26px'],
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body {
+    background-color: #0D1117;
+    color: #E6EDF3;
+    font-family: 'Geist', -apple-system, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+  }
+  .focus-ring:focus {
+    outline: 2px solid #58A6FF !important;
+    outline-offset: 1px !important;
+  }
+  .focus-ring-within:focus-within {
+    outline: 2px solid #58A6FF !important;
+    outline-offset: 1px !important;
+  }
+  /* Tabular figures for monospace data */
+  .tabular-num {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0D1117;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #30363D;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body class="p-6 min-h-screen text-text-primary selection:bg-[#264F78]">
+
+  <!-- Top Page Header Bar & Navigation / Jump Links -->
+  <header class="mb-8 pb-4 border-b border-border flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-3">
+        <span class="font-mono text-ui-14 font-semibold text-text-primary tracking-tight">CodeClass</span>
+        <span class="text-text-muted text-ui-12">/</span>
+        <span class="text-text-secondary text-ui-13">Authentication & Access Control Spec</span>
+        <span class="px-1.5 py-0.5 text-ui-11 font-mono uppercase bg-[#161B22] border border-border text-text-muted rounded">Strict dark mode · 13px base</span>
+      </div>
+      <p class="text-text-secondary text-ui-12 mt-1">University computer science laboratory environment. No public self-registration. Left-third viewport alignment.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="#signin-states" class="px-2.5 py-1 text-ui-12 border border-border bg-[#161B22] hover:bg-hover-row rounded focus-ring text-text-secondary hover:text-text-primary">Sign-In States</a>
+      <a href="#supporting-flows" class="px-2.5 py-1 text-ui-12 border border-border bg-[#161B22] hover:bg-hover-row rounded focus-ring text-text-secondary hover:text-text-primary">Password Recovery</a>
+      <a href="#access-denied" class="px-2.5 py-1 text-ui-12 border border-border bg-[#161B22] hover:bg-hover-row rounded focus-ring text-text-secondary hover:text-text-primary">Access Denied & Change Password</a>
+      <a href="#mobile-frames" class="px-2.5 py-1 text-ui-12 border border-border bg-[#161B22] hover:bg-hover-row rounded focus-ring text-text-secondary hover:text-text-primary">Mobile Frames</a>
+    </div>
+  </header>
+
+  <!-- SECTION 1: SIGN IN STATES (Desktop Viewports with left-third alignment) -->
+  <section id="signin-states" class="mb-12">
+    <div class="mb-4 flex items-center justify-between">
+      <div>
+        <h2 class="text-ui-16 font-semibold text-text-primary">Screen 1: Sign In — Core State Frames</h2>
+        <p class="text-ui-12 text-text-secondary">Left-aligned 380px pane inside desktop viewport. Quiet university branding, strict 4px control radius, 1px border.</p>
+      </div>
+      <div class="text-ui-11 font-mono text-text-muted">DESKTOP (380px PANE / LEFT-THIRD)</div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-6">
+
+      <!-- State 1: Default Empty -->
+      <div class="bg-app border border-border rounded-[2px] p-6 relative flex flex-col justify-between min-h-[580px]">
+        <div>
+          <!-- Frame Meta Header -->
+          <div class="flex items-center justify-between pb-3 mb-6 border-b border-subtle-divider">
+            <span class="text-ui-11 font-mono uppercase tracking-wider text-text-secondary">State 1 · Default Empty</span>
+            <span class="inline-flex items-center gap-1.5 text-ui-11 font-mono text-text-muted">
+              <span class="w-1.5 h-1.5 rounded-full bg-text-muted"></span> Unauthenticated
+            </span>
+          </div>
+
+          <!-- University Wordmark (Left-aligned) -->
+          <div class="mb-8">
+            <div class="font-semibold text-ui-14 text-text-primary font-mono tracking-tight">CodeClass</div>
+            <div class="text-text-secondary text-ui-12">Department of Computer Science</div>
+          </div>
+
+          <!-- 380px Form Card -->
+          <div class="w-full max-w-[380px] bg-pane border border-border rounded-[2px] p-5">
+            <div class="mb-5">
+              <h1 class="text-ui-20 font-semibold text-text-primary tracking-tight">Sign in</h1>
+              <p class="text-text-secondary text-ui-13 mt-0.5">Use your university account.</p>
+            </div>
+
+            <form class="space-y-4" onsubmit="event.preventDefault()">
+              <!-- Email / ID -->
+              <div>
+                <label for="f1_id" class="block text-ui-12 font-medium text-text-primary mb-1.5">University email or ID</label>
+                <input id="f1_id" type="text" placeholder="name@university.edu" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 text-ui-13 text-text-primary placeholder:text-text-muted focus-ring">
+              </div>
+
+              <!-- Password -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <label for="f1_pw" class="block text-ui-12 font-medium text-text-primary">Password</label>
+                </div>
+                <div class="relative flex items-center focus-ring-within rounded-[4px]">
+                  <input id="f1_pw" type="password" value="" placeholder="••••••••••••" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 pr-14 text-ui-13 text-text-primary placeholder:text-text-muted focus:outline-none">
+                  <button type="button" class="absolute right-2 text-ui-12 text-text-secondary hover:text-text-primary font-medium px-1.5 py-0.5 rounded focus-ring">Show</button>
+                </div>
+                <div class="mt-1.5">
+                  <a href="#" class="text-ui-12 text-btn-primary hover:underline">Forgot password?</a>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="w-full bg-btn-primary hover:bg-btn-primary-hover text-white font-medium text-ui-13 py-2 px-4 rounded-[4px] transition-colors focus-ring">
+                Sign in
+              </button>
+            </form>
+
+            <!-- Card Quiet Footer -->
+            <div class="mt-6 pt-4 border-t border-subtle-divider text-ui-12 text-text-secondary space-y-1">
+              <p>Accounts are created by your department administrator.</p>
+              <p><a href="#" class="text-btn-primary hover:underline">Need help signing in?</a></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-subtle-divider flex items-center justify-between text-ui-11 font-mono text-text-muted">
+          <span>Target: 380px pane</span>
+          <span>Tab order: ID &rarr; PW &rarr; Show &rarr; Forgot &rarr; Submit</span>
+        </div>
+      </div>
+
+      <!-- State 2: Validation Errors -->
+      <div class="bg-app border border-border rounded-[2px] p-6 relative flex flex-col justify-between min-h-[580px]">
+        <div>
+          <!-- Frame Meta Header -->
+          <div class="flex items-center justify-between pb-3 mb-6 border-b border-subtle-divider">
+            <span class="text-ui-11 font-mono uppercase tracking-wider text-text-secondary">State 2 · Validation Error</span>
+            <span class="inline-flex items-center gap-1.5 text-ui-11 font-mono text-status-error">
+              <span class="w-1.5 h-1.5 rounded-full bg-status-error"></span> Input Check
+            </span>
+          </div>
+
+          <!-- University Wordmark -->
+          <div class="mb-8">
+            <div class="font-semibold text-ui-14 text-text-primary font-mono tracking-tight">CodeClass</div>
+            <div class="text-text-secondary text-ui-12">Department of Computer Science</div>
+          </div>
+
+          <!-- 380px Form Card -->
+          <div class="w-full max-w-[380px] bg-pane border border-border rounded-[2px] p-5">
+            <div class="mb-4">
+              <h1 class="text-ui-20 font-semibold text-text-primary tracking-tight">Sign in</h1>
+              <p class="text-text-secondary text-ui-13 mt-0.5">Use your university account.</p>
+            </div>
+
+            <!-- Error summary line above the form -->
+            <div class="mb-4 p-2.5 bg-[#1F1415] border border-status-error/40 rounded-[2px] text-ui-12 text-status-error flex items-start gap-2">
+              <span class="font-mono text-ui-11 font-bold mt-0.5 text-status-error">[!]</span>
+              <span>Please fill in the required fields below.</span>
+            </div>
+
+            <form class="space-y-4" onsubmit="event.preventDefault()">
+              <!-- Email / ID with error -->
+              <div>
+                <label for="f2_id" class="block text-ui-12 font-medium text-text-primary mb-1.5">University email or ID</label>
+                <input id="f2_id" type="text" value="" class="w-full bg-editor border border-status-error rounded-[4px] px-3 py-2 text-ui-13 text-text-primary focus-ring">
+                <p class="mt-1 text-ui-12 text-status-error flex items-center gap-1">
+                  <span class="w-1 h-1 rounded-full bg-status-error"></span>
+                  Enter your email or ID.
+                </p>
+              </div>
+
+              <!-- Password with error -->
+              <div>
+                <label for="f2_pw" class="block text-ui-12 font-medium text-text-primary mb-1.5">Password</label>
+                <div class="relative flex items-center rounded-[4px]">
+                  <input id="f2_pw" type="password" value="" class="w-full bg-editor border border-status-error rounded-[4px] px-3 py-2 pr-14 text-ui-13 text-text-primary focus:outline-none">
+                  <button type="button" class="absolute right-2 text-ui-12 text-text-secondary hover:text-text-primary font-medium px-1.5 py-0.5 rounded focus-ring">Show</button>
+                </div>
+                <p class="mt-1 text-ui-12 text-status-error flex items-center gap-1">
+                  <span class="w-1 h-1 rounded-full bg-status-error"></span>
+                  Enter your password.
+                </p>
+                <div class="mt-1.5">
+                  <a href="#" class="text-ui-12 text-btn-primary hover:underline">Forgot password?</a>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="w-full bg-btn-primary hover:bg-btn-primary-hover text-white font-medium text-ui-13 py-2 px-4 rounded-[4px] transition-colors focus-ring">
+                Sign in
+              </button>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-subtle-divider text-ui-12 text-text-secondary space-y-1">
+              <p>Accounts are created by your department administrator.</p>
+              <p><a href="#" class="text-btn-primary hover:underline">Need help signing in?</a></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-subtle-divider flex items-center justify-between text-ui-11 font-mono text-text-muted">
+          <span>Summary banner + inline</span>
+          <span>Red #F85149 · 1px border</span>
+        </div>
+      </div>
+
+      <!-- State 3: Signing In (Pending/Disabled) -->
+      <div class="bg-app border border-border rounded-[2px] p-6 relative flex flex-col justify-between min-h-[580px]">
+        <div>
+          <!-- Frame Meta Header -->
+          <div class="flex items-center justify-between pb-3 mb-6 border-b border-subtle-divider">
+            <span class="text-ui-11 font-mono uppercase tracking-wider text-text-secondary">State 3 · Signing In…</span>
+            <span class="inline-flex items-center gap-1.5 text-ui-11 font-mono text-btn-primary">
+              <span class="w-1.5 h-1.5 rounded-full bg-btn-primary animate-pulse"></span> Authenticating
+            </span>
+          </div>
+
+          <!-- University Wordmark -->
+          <div class="mb-8">
+            <div class="font-semibold text-ui-14 text-text-primary font-mono tracking-tight">CodeClass</div>
+            <div class="text-text-secondary text-ui-12">Department of Computer Science</div>
+          </div>
+
+          <!-- 380px Form Card -->
+          <div class="w-full max-w-[380px] bg-pane border border-border rounded-[2px] p-5 opacity-95">
+            <div class="mb-5">
+              <h1 class="text-ui-20 font-semibold text-text-primary tracking-tight">Sign in</h1>
+              <p class="text-text-secondary text-ui-13 mt-0.5">Use your university account.</p>
+            </div>
+
+            <form class="space-y-4" onsubmit="event.preventDefault()">
+              <!-- Email / ID (Readonly) -->
+              <div>
+                <label for="f3_id" class="block text-ui-12 font-medium text-text-secondary mb-1.5">University email or ID</label>
+                <input id="f3_id" type="text" readonly value="l.haddad@university.edu" class="w-full bg-[#111419] border border-border rounded-[4px] px-3 py-2 text-ui-13 text-text-secondary font-mono cursor-not-allowed">
+              </div>
+
+              <!-- Password (Readonly) -->
+              <div>
+                <label for="f3_pw" class="block text-ui-12 font-medium text-text-secondary mb-1.5">Password</label>
+                <div class="relative flex items-center rounded-[4px]">
+                  <input id="f3_pw" type="password" readonly value="supersecret123" class="w-full bg-[#111419] border border-border rounded-[4px] px-3 py-2 pr-14 text-ui-13 text-text-secondary cursor-not-allowed">
+                  <span class="absolute right-3 text-ui-12 text-text-muted font-medium">Show</span>
+                </div>
+                <div class="mt-1.5">
+                  <span class="text-ui-12 text-text-muted cursor-not-allowed">Forgot password?</span>
+                </div>
+              </div>
+
+              <!-- Submit Button Disabled with "Signing in…" -->
+              <button type="button" disabled class="w-full bg-[#203a6c] text-[#A5C3FF] border border-[#2F6FEB]/40 font-medium text-ui-13 py-2 px-4 rounded-[4px] flex items-center justify-center gap-2 cursor-wait">
+                <span class="inline-block w-2 h-2 rounded-full bg-[#58A6FF]"></span>
+                <span>Signing in…</span>
+              </button>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-subtle-divider text-ui-12 text-text-secondary space-y-1">
+              <p>Accounts are created by your department administrator.</p>
+              <p><span class="text-text-muted">Need help signing in?</span></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-subtle-divider flex items-center justify-between text-ui-11 font-mono text-text-muted">
+          <span>Read-only inputs</span>
+          <span>No heavy spinners · Quiet tone</span>
+        </div>
+      </div>
+
+      <!-- State 4: Wrong Credentials -->
+      <div class="bg-app border border-border rounded-[2px] p-6 relative flex flex-col justify-between min-h-[580px]">
+        <div>
+          <!-- Frame Meta Header -->
+          <div class="flex items-center justify-between pb-3 mb-6 border-b border-subtle-divider">
+            <span class="text-ui-11 font-mono uppercase tracking-wider text-text-secondary">State 4 · Wrong Credentials</span>
+            <span class="inline-flex items-center gap-1.5 text-ui-11 font-mono text-status-error">
+              <span class="w-1.5 h-1.5 rounded-full bg-status-error"></span> Auth Failed
+            </span>
+          </div>
+
+          <!-- University Wordmark -->
+          <div class="mb-8">
+            <div class="font-semibold text-ui-14 text-text-primary font-mono tracking-tight">CodeClass</div>
+            <div class="text-text-secondary text-ui-12">Department of Computer Science</div>
+          </div>
+
+          <!-- 380px Form Card -->
+          <div class="w-full max-w-[380px] bg-pane border border-border rounded-[2px] p-5">
+            <!-- Wrong Credentials Banner (Never reveals which is incorrect) -->
+            <div class="mb-4 p-3 bg-[#1F1415] border border-status-error/40 rounded-[2px] flex items-start gap-2.5">
+              <span class="text-status-error font-mono text-ui-12 mt-0.5 font-bold">[!]</span>
+              <div class="text-ui-12 text-text-primary leading-tight">
+                <span class="text-status-error font-medium">Authentication error:</span>
+                The email/ID or password is incorrect.
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <h1 class="text-ui-20 font-semibold text-text-primary tracking-tight">Sign in</h1>
+              <p class="text-text-secondary text-ui-13 mt-0.5">Use your university account.</p>
+            </div>
+
+            <form class="space-y-4" onsubmit="event.preventDefault()">
+              <!-- Email / ID (Preserved) -->
+              <div>
+                <label for="f4_id" class="block text-ui-12 font-medium text-text-primary mb-1.5">University email or ID</label>
+                <input id="f4_id" type="text" value="alex.chen@univ.edu" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 text-ui-13 text-text-primary font-mono focus-ring">
+              </div>
+
+              <!-- Password (Cleared for security) -->
+              <div>
+                <label for="f4_pw" class="block text-ui-12 font-medium text-text-primary mb-1.5">Password</label>
+                <div class="relative flex items-center rounded-[4px]">
+                  <input id="f4_pw" type="password" placeholder="••••••••••••" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 pr-14 text-ui-13 text-text-primary focus-ring">
+                  <button type="button" class="absolute right-2 text-ui-12 text-text-secondary hover:text-text-primary font-medium px-1.5 py-0.5 rounded focus-ring">Show</button>
+                </div>
+                <div class="mt-1.5">
+                  <a href="#" class="text-ui-12 text-btn-primary hover:underline">Forgot password?</a>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="w-full bg-btn-primary hover:bg-btn-primary-hover text-white font-medium text-ui-13 py-2 px-4 rounded-[4px] transition-colors focus-ring">
+                Sign in
+              </button>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-subtle-divider text-ui-12 text-text-secondary space-y-1">
+              <p>Accounts are created by your department administrator.</p>
+              <p><a href="#" class="text-btn-primary hover:underline">Need help signing in?</a></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-subtle-divider flex items-center justify-between text-ui-11 font-mono text-text-muted">
+          <span>Security constraint</span>
+          <span>Never identify which field is wrong</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ROW 2 OF SIGN-IN STATES -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-6 mt-6">
+
+      <!-- State 5: Deactivated Account -->
+      <div class="bg-app border border-border rounded-[2px] p-6 relative flex flex-col justify-between min-h-[580px]">
+        <div>
+          <!-- Frame Meta Header -->
+          <div class="flex items-center justify-between pb-3 mb-6 border-b border-subtle-divider">
+            <span class="text-ui-11 font-mono uppercase tracking-wider text-text-secondary">State 5 · Deactivated Account</span>
+            <span class="inline-flex items-center gap-1.5 text-ui-11 font-mono text-status-warning">
+              <span class="w-1.5 h-1.5 rounded-full bg-status-warning"></span> Admin Lock
+            </span>
+          </div>
+
+          <!-- University Wordmark -->
+          <div class="mb-8">
+            <div class="font-semibold text-ui-14 text-text-primary font-mono tracking-tight">CodeClass</div>
+            <div class="text-text-secondary text-ui-12">Department of Computer Science</div>
+          </div>
+
+          <!-- 380px Form Card -->
+          <div class="w-full max-w-[380px] bg-pane border border-border rounded-[2px] p-5">
+            <!-- Warning Banner -->
+            <div class="mb-4 p-3 bg-[#241c10] border border-status-warning/40 rounded-[2px]">
+              <div class="flex items-start gap-2">
+                <span class="text-status-warning font-mono text-ui-12 mt-0.5 font-bold">[!]</span>
+                <div class="text-ui-12 text-text-primary">
+                  <p class="font-medium text-status-warning mb-1">Account deactivated</p>
+                  <p class="text-text-secondary text-ui-12 leading-relaxed">This account has been deactivated. Contact your department administrator to restore access.</p>
+                  <div class="mt-2.5">
+                    <a href="mailto:cs-admin@univ.edu?subject=CodeClass%20Account%20Deactivation%20Inquiry" class="inline-flex items-center gap-1 text-ui-12 text-btn-primary hover:underline font-medium">
+                      <span>Contact administrator</span>
+                      <span class="text-ui-11 font-mono">&rarr;</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <h1 class="text-ui-20 font-semibold text-text-primary tracking-tight">Sign in</h1>
+              <p class="text-text-secondary text-ui-13 mt-0.5">Use your university account.</p>
+            </div>
+
+            <form class="space-y-4" onsubmit="event.preventDefault()">
+              <!-- Email / ID -->
+              <div>
+                <label for="f5_id" class="block text-ui-12 font-medium text-text-primary mb-1.5">University email or ID</label>
+                <input id="f5_id" type="text" value="m.sullivan@univ.edu" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 text-ui-13 text-text-primary font-mono focus-ring">
+              </div>
+
+              <!-- Password (No password error shown) -->
+              <div>
+                <label for="f5_pw" class="block text-ui-12 font-medium text-text-primary mb-1.5">Password</label>
+                <div class="relative flex items-center rounded-[4px]">
+                  <input id="f5_pw" type="password" value="currentpass123" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 pr-14 text-ui-13 text-text-primary focus-ring">
+                  <button type="button" class="absolute right-2 text-ui-12 text-text-secondary hover:text-text-primary font-medium px-1.5 py-0.5 rounded focus-ring">Show</button>
+                </div>
+                <div class="mt-1.5">
+                  <a href="#" class="text-ui-12 text-btn-primary hover:underline">Forgot password?</a>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full bg-btn-primary hover:bg-btn-primary-hover text-white font-medium text-ui-13 py-2 px-4 rounded-[4px] transition-colors focus-ring">
+                Sign in
+              </button>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-subtle-divider text-ui-12 text-text-secondary space-y-1">
+              <p>Accounts are created by your department administrator.</p>
+              <p><a href="#" class="text-btn-primary hover:underline">Need help signing in?</a></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-subtle-divider flex items-center justify-between text-ui-11 font-mono text-text-muted">
+          <span>Warning #D29922</span>
+          <span>Direct mailto action</span>
+        </div>
+      </div>
+
+      <!-- State 6: Too Many Attempts (Suggested Behavior) -->
+      <div class="bg-app border border-border rounded-[2px] p-6 relative flex flex-col justify-between min-h-[580px]">
+        <div>
+          <!-- Frame Meta Header -->
+          <div class="flex items-center justify-between pb-3 mb-6 border-b border-subtle-divider">
+            <span class="text-ui-11 font-mono uppercase tracking-wider text-text-secondary">State 6 · Rate Limited</span>
+            <span class="inline-flex items-center gap-1.5 text-ui-11 font-mono text-status-warning">
+              <span class="w-1.5 h-1.5 rounded-full bg-status-warning"></span> 10m Cooldown
+            </span>
+          </div>
+
+          <!-- University Wordmark -->
+          <div class="mb-8">
+            <div class="font-semibold text-ui-14 text-text-primary font-mono tracking-tight">CodeClass</div>
+            <div class="text-text-secondary text-ui-12">Department of Computer Science</div>
+          </div>
+
+          <!-- 380px Form Card -->
+          <div class="w-full max-w-[380px] bg-pane border border-border rounded-[2px] p-5">
+            <!-- Rate limit banner -->
+            <div class="mb-4 p-3 bg-[#241c10] border border-status-warning/40 rounded-[2px]">
+              <div class="flex items-start gap-2">
+                <span class="text-status-warning font-mono text-ui-12 mt-0.5 font-bold">[!]</span>
+                <div class="text-ui-12 text-text-primary">
+                  <span class="font-medium text-status-warning">Too many failed attempts.</span>
+                  <p class="text-text-secondary mt-0.5">Try again in <span class="font-mono text-text-primary tabular-num">09:42</span> minutes.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Annotation Badge for Suggested Spec -->
+            <div class="mb-4 px-2 py-1 bg-[#161B22] border border-border rounded text-ui-11 font-mono text-text-muted flex items-center justify-between">
+              <span>* Suggested behavior: attempt limits pending final policy</span>
+            </div>
+
+            <div class="mb-4">
+              <h1 class="text-ui-20 font-semibold text-text-primary tracking-tight">Sign in</h1>
+              <p class="text-text-secondary text-ui-13 mt-0.5">Use your university account.</p>
+            </div>
+
+            <form class="space-y-4" onsubmit="event.preventDefault()">
+              <!-- Email / ID (Disabled) -->
+              <div>
+                <label for="f6_id" class="block text-ui-12 font-medium text-text-muted mb-1.5">University email or ID</label>
+                <input id="f6_id" type="text" disabled value="alex.chen@univ.edu" class="w-full bg-[#111419] border border-border rounded-[4px] px-3 py-2 text-ui-13 text-text-muted font-mono cursor-not-allowed">
+              </div>
+
+              <!-- Password (Disabled) -->
+              <div>
+                <label for="f6_pw" class="block text-ui-12 font-medium text-text-muted mb-1.5">Password</label>
+                <div class="relative flex items-center rounded-[4px]">
+                  <input id="f6_pw" type="password" disabled value="••••••••••••" class="w-full bg-[#111419] border border-border rounded-[4px] px-3 py-2 pr-14 text-ui-13 text-text-muted cursor-not-allowed">
+                  <span class="absolute right-3 text-ui-12 text-text-muted font-medium">Show</span>
+                </div>
+                <div class="mt-1.5">
+                  <span class="text-ui-12 text-text-muted cursor-not-allowed">Forgot password?</span>
+                </div>
+              </div>
+
+              <button type="button" disabled class="w-full bg-[#21262D] text-text-muted border border-border font-medium text-ui-13 py-2 px-4 rounded-[4px] cursor-not-allowed">
+                Sign in (Disabled 09:42)
+              </button>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-subtle-divider text-ui-12 text-text-secondary space-y-1">
+              <p>Accounts are created by your department administrator.</p>
+              <p><a href="#" class="text-btn-primary hover:underline">Need help signing in?</a></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-subtle-divider flex items-center justify-between text-ui-11 font-mono text-text-muted">
+          <span>Form fully locked</span>
+          <span>Tabular countdown timer</span>
+        </div>
+      </div>
+
+      <!-- State 7: Connection Problem -->
+      <div class="bg-app border border-border rounded-[2px] p-6 relative flex flex-col justify-between min-h-[580px]">
+        <div>
+          <!-- Frame Meta Header -->
+          <div class="flex items-center justify-between pb-3 mb-6 border-b border-subtle-divider">
+            <span class="text-ui-11 font-mono uppercase tracking-wider text-text-secondary">State 7 · Connection Problem</span>
+            <span class="inline-flex items-center gap-1.5 text-ui-11 font-mono text-status-warning">
+              <span class="w-1.5 h-1.5 rounded-full bg-status-warning"></span> Unreachable
+            </span>
+          </div>
+
+          <!-- University Wordmark -->
+          <div class="mb-8">
+            <div class="font-semibold text-ui-14 text-text-primary font-mono tracking-tight">CodeClass</div>
+            <div class="text-text-secondary text-ui-12">Department of Computer Science</div>
+          </div>
+
+          <!-- 380px Form Card -->
+          <div class="w-full max-w-[380px] bg-pane border border-border rounded-[2px] p-5">
+            <!-- Connection banner (no technical stack traces or raw HTTP errors) -->
+            <div class="mb-4 p-3 bg-[#161B22] border border-border rounded-[2px]">
+              <div class="flex items-start gap-2.5">
+                <span class="text-text-secondary font-mono text-ui-12 mt-0.5 font-bold">[?]</span>
+                <div class="text-ui-12 text-text-primary">
+                  <p class="font-medium text-text-primary mb-0.5">Can't reach CodeClass.</p>
+                  <p class="text-text-secondary text-ui-12 mb-2">Check your connection and try again.</p>
+                  <button type="button" class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-pane hover:bg-hover-row border border-border rounded text-ui-12 text-text-primary focus-ring">
+                    <span>Try again</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <h1 class="text-ui-20 font-semibold text-text-primary tracking-tight">Sign in</h1>
+              <p class="text-text-secondary text-ui-13 mt-0.5">Use your university account.</p>
+            </div>
+
+            <form class="space-y-4" onsubmit="event.preventDefault()">
+              <div>
+                <label for="f7_id" class="block text-ui-12 font-medium text-text-primary mb-1.5">University email or ID</label>
+                <input id="f7_id" type="text" value="l.haddad@university.edu" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 text-ui-13 text-text-primary font-mono focus-ring">
+              </div>
+
+              <div>
+                <label for="f7_pw" class="block text-ui-12 font-medium text-text-primary mb-1.5">Password</label>
+                <div class="relative flex items-center rounded-[4px]">
+                  <input id="f7_pw" type="password" value="••••••••••••" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 pr-14 text-ui-13 text-text-primary focus-ring">
+                  <button type="button" class="absolute right-2 text-ui-12 text-text-secondary hover:text-text-primary font-medium px-1.5 py-0.5 rounded focus-ring">Show</button>
+                </div>
+                <div class="mt-1.5">
+                  <a href="#" class="text-ui-12 text-btn-primary hover:underline">Forgot password?</a>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full bg-btn-primary hover:bg-btn-primary-hover text-white font-medium text-ui-13 py-2 px-4 rounded-[4px] transition-colors focus-ring">
+                Sign in
+              </button>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-subtle-divider text-ui-12 text-text-secondary space-y-1">
+              <p>Accounts are created by your department administrator.</p>
+              <p><a href="#" class="text-btn-primary hover:underline">Need help signing in?</a></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-subtle-divider flex items-center justify-between text-ui-11 font-mono text-text-muted">
+          <span>No raw server traces</span>
+          <span>Includes &quot;Try again&quot; CTA</span>
+        </div>
+      </div>
+
+      <!-- State 8: Session Expired -->
+      <div class="bg-app border border-border rounded-[2px] p-6 relative flex flex-col justify-between min-h-[580px]">
+        <div>
+          <!-- Frame Meta Header -->
+          <div class="flex items-center justify-between pb-3 mb-6 border-b border-subtle-divider">
+            <span class="text-ui-11 font-mono uppercase tracking-wider text-text-secondary">State 8 · Session Expired</span>
+            <span class="inline-flex items-center gap-1.5 text-ui-11 font-mono text-text-secondary">
+              <span class="w-1.5 h-1.5 rounded-full bg-text-secondary"></span> Re-authenticate
+            </span>
+          </div>
+
+          <!-- University Wordmark -->
+          <div class="mb-8">
+            <div class="font-semibold text-ui-14 text-text-primary font-mono tracking-tight">CodeClass</div>
+            <div class="text-text-secondary text-ui-12">Department of Computer Science</div>
+          </div>
+
+          <!-- 380px Form Card -->
+          <div class="w-full max-w-[380px] bg-pane border border-border rounded-[2px] p-5">
+            <!-- Session expired banner above the form -->
+            <div class="mb-4 p-3 bg-[#1B2740] border-l-2 border-l-btn-primary border-t border-r border-b border-border rounded-[2px] flex items-center gap-2.5">
+              <span class="text-btn-primary font-mono text-ui-12 font-bold">[i]</span>
+              <span class="text-ui-12 text-text-primary">Your session expired. Sign in again to continue.</span>
+            </div>
+
+            <div class="mb-4">
+              <h1 class="text-ui-20 font-semibold text-text-primary tracking-tight">Sign in</h1>
+              <p class="text-text-secondary text-ui-13 mt-0.5">Use your university account.</p>
+            </div>
+
+            <form class="space-y-4" onsubmit="event.preventDefault()">
+              <!-- Email pre-filled from expired session -->
+              <div>
+                <label for="f8_id" class="block text-ui-12 font-medium text-text-primary mb-1.5">University email or ID</label>
+                <input id="f8_id" type="text" value="l.haddad@university.edu" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 text-ui-13 text-text-primary font-mono focus-ring">
+              </div>
+
+              <!-- Password focused -->
+              <div>
+                <label for="f8_pw" class="block text-ui-12 font-medium text-text-primary mb-1.5">Password</label>
+                <div class="relative flex items-center rounded-[4px]">
+                  <input id="f8_pw" type="password" placeholder="••••••••••••" autofocus class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 pr-14 text-ui-13 text-text-primary focus-ring">
+                  <button type="button" class="absolute right-2 text-ui-12 text-text-secondary hover:text-text-primary font-medium px-1.5 py-0.5 rounded focus-ring">Show</button>
+                </div>
+                <div class="mt-1.5">
+                  <a href="#" class="text-ui-12 text-btn-primary hover:underline">Forgot password?</a>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full bg-btn-primary hover:bg-btn-primary-hover text-white font-medium text-ui-13 py-2 px-4 rounded-[4px] transition-colors focus-ring">
+                Sign in
+              </button>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-subtle-divider text-ui-12 text-text-secondary space-y-1">
+              <p>Accounts are created by your department administrator.</p>
+              <p><a href="#" class="text-btn-primary hover:underline">Need help signing in?</a></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-subtle-divider flex items-center justify-between text-ui-11 font-mono text-text-muted">
+          <span>Pre-fills existing ID</span>
+          <span>Preserves redirect intent URL</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 2: REDIRECT BEHAVIOR SPECIFICATION (Annotation Sheet, Not UI) -->
+  <section class="mb-12">
+    <div class="bg-[#12161D] border border-border rounded-[2px] p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2 py-0.5 text-ui-11 font-mono uppercase bg-[#161B22] border border-border text-btn-primary rounded font-semibold">Specification Note</span>
+        <h3 class="text-ui-14 font-semibold text-text-primary">Post-Authentication Routing & Redirect Matrix (Annotation Sheet)</h3>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-ui-12">
+        <div class="bg-pane p-3 border border-subtle-divider rounded-[2px]">
+          <div class="font-mono text-ui-11 text-text-muted uppercase mb-1">Standard Direct Sign-In</div>
+          <div class="text-text-primary font-medium mb-1">Role Default Landing</div>
+          <ul class="text-text-secondary space-y-1">
+            <li>• <strong class="text-text-primary font-mono">admin</strong> &rarr; <span class="font-mono">/admin/users</span></li>
+            <li>• <strong class="text-text-primary font-mono">instructor</strong> &rarr; <span class="font-mono">/instructor/courses</span></li>
+            <li>• <strong class="text-text-primary font-mono">student</strong> &rarr; <span class="font-mono">/student/live</span> (Screen 1)</li>
+          </ul>
+        </div>
+        <div class="bg-pane p-3 border border-subtle-divider rounded-[2px]">
+          <div class="font-mono text-ui-11 text-text-muted uppercase mb-1">Protected URL Redirection</div>
+          <div class="text-text-primary font-medium mb-1">Target Page Permission Check</div>
+          <p class="text-text-secondary leading-relaxed">
+            If intercepted by auth check (e.g. <span class="font-mono text-text-primary">?return_to=/cs201/exam/midterm</span>), validate authenticated user's role against target page ACL before redirecting.
+          </p>
+        </div>
+        <div class="bg-pane p-3 border border-subtle-divider rounded-[2px]">
+          <div class="font-mono text-ui-11 text-text-muted uppercase mb-1">Unauthorized Target Access</div>
+          <div class="text-text-primary font-medium mb-1">Route to Access Denied</div>
+          <p class="text-text-secondary leading-relaxed">
+            If the signed-in role cannot access the requested route (e.g. a student trying to open <span class="font-mono text-text-primary">/admin/users</span>), route directly to the <strong class="text-text-primary">Access Denied Screen</strong> inside the standard shell.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: SUPPORTING FLOWS (Suggested, not finalized) -->
+  <section id="supporting-flows" class="mb-12">
+    <div class="mb-4 flex items-center justify-between">
+      <div>
+        <div class="flex items-center gap-2">
+          <h2 class="text-ui-16 font-semibold text-text-primary">Supporting Account Flows</h2>
+          <span class="text-ui-11 font-mono px-2 py-0.5 bg-[#1C232C] text-status-warning border border-status-warning/30 rounded">Suggested, not finalized</span>
+        </div>
+        <p class="text-ui-12 text-text-secondary">Password recovery, link validation states, and mandatory initial administrative credential changes.</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-6">
+
+      <!-- Flow 1A: Forgot Password Request Form -->
+      <div class="bg-app border border-border rounded-[2px] p-6 relative flex flex-col justify-between min-h-[560px]">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-6 border-b border-subtle-divider">
+            <span class="text-ui-11 font-mono uppercase tracking-wider text-text-secondary">Flow 1A · Forgot Password</span>
+            <span class="text-ui-11 font-mono text-text-muted">Recovery Request</span>
+          </div>
+
+          <div class="mb-8">
+            <div class="font-semibold text-ui-14 text-text-primary font-mono tracking-tight">CodeClass</div>
+            <div class="text-text-secondary text-ui-12">Department of Computer Science</div>
+          </div>
+
+          <div class="w-full max-w-[380px] bg-pane border border-border rounded-[2px] p-5">
+            <div class="mb-5">
+              <h1 class="text-ui-20 font-semibold text-text-primary tracking-tight">Reset password</h1>
+              <p class="text-text-secondary text-ui-13 mt-0.5">Enter your email or university ID to receive a recovery link.</p>
+            </div>
+
+            <form class="space-y-4" onsubmit="event.preventDefault()">
+              <div>
+                <label for="fp_id" class="block text-ui-12 font-medium text-text-primary mb-1.5">University email or ID</label>
+                <input id="fp_id" type="text" placeholder="name@university.edu" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 text-ui-13 text-text-primary font-mono placeholder:text-text-muted focus-ring">
+              </div>
+
+              <button type="submit" class="w-full bg-btn-primary hover:bg-btn-primary-hover text-white font-medium text-ui-13 py-2 px-4 rounded-[4px] transition-colors focus-ring">
+                Send reset link
+              </button>
+
+              <div class="text-center pt-2">
+                <a href="#signin-states" class="text-ui-12 text-text-secondary hover:text-text-primary">&larr; Return to sign in</a>
+              </div>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-subtle-divider text-ui-12 text-text-secondary">
+              <p>Accounts are created by your department administrator.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-subtle-divider flex items-center justify-between text-ui-11 font-mono text-text-muted">
+          <span>One input field</span>
+          <span>Zero email enumeration</span>
+        </div>
+      </div>
+
+      <!-- Flow 1B: Forgot Password Confirmation (Neutral Wording) -->
+      <div class="bg-app border border-border rounded-[2px] p-6 relative flex flex-col justify-between min-h-[560px]">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-6 border-b border-subtle-divider">
+            <span class="text-ui-11 font-mono uppercase tracking-wider text-text-secondary">Flow 1B · Link Sent (Neutral)</span>
+            <span class="text-ui-11 font-mono text-status-live">Dispatched</span>
+          </div>
+
+          <div class="mb-8">
+            <div class="font-semibold text-ui-14 text-text-primary font-mono tracking-tight">CodeClass</div>
+            <div class="text-text-secondary text-ui-12">Department of Computer Science</div>
+          </div>
+
+          <div class="w-full max-w-[380px] bg-pane border border-border rounded-[2px] p-5">
+            <div class="mb-4">
+              <h1 class="text-ui-20 font-semibold text-text-primary tracking-tight">Check your email</h1>
+            </div>
+
+            <!-- Neutral message preventing account enumeration -->
+            <div class="space-y-3 text-ui-13 text-text-secondary mb-6 leading-relaxed">
+              <p class="text-text-primary">If an account matches, we've sent a reset link.</p>
+              <p>The link is valid for 30 minutes. If you do not see it in your university inbox, check your spam folder or contact your lab administrator.</p>
+            </div>
+
+            <div class="space-y-3">
+              <a href="#signin-states" class="block text-center w-full bg-pane hover:bg-hover-row border border-border text-text-primary font-medium text-ui-13 py-2 px-4 rounded-[4px] transition-colors focus-ring">
+                Return to sign in
+              </a>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-subtle-divider text-ui-12 text-text-secondary">
+              <p>Need urgent access for a live exam? <a href="#" class="text-btn-primary hover:underline">Contact lab proctor</a></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-subtle-divider flex items-center justify-between text-ui-11 font-mono text-text-muted">
+          <span>Security requirement</span>
+          <span>Never reveal if user exists</span>
+        </div>
+      </div>
+
+      <!-- Flow 2: Set New Password (From Link) with Explicit Met/Not Met Criteria -->
+      <div class="bg-app border border-border rounded-[2px] p-6 relative flex flex-col justify-between min-h-[560px]">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-6 border-b border-subtle-divider">
+            <span class="text-ui-11 font-mono uppercase tracking-wider text-text-secondary">Flow 2 · Set New Password</span>
+            <span class="text-ui-11 font-mono text-text-muted">Token Verified</span>
+          </div>
+
+          <div class="mb-8">
+            <div class="font-semibold text-ui-14 text-text-primary font-mono tracking-tight">CodeClass</div>
+            <div class="text-text-secondary text-ui-12">Department of Computer Science</div>
+          </div>
+
+          <div class="w-full max-w-[380px] bg-pane border border-border rounded-[2px] p-5">
+            <div class="mb-4">
+              <h1 class="text-ui-20 font-semibold text-text-primary tracking-tight">Set new password</h1>
+              <p class="text-text-secondary text-ui-12 font-mono mt-0.5">Account: l.haddad@university.edu</p>
+            </div>
+
+            <form class="space-y-3.5" onsubmit="event.preventDefault()">
+              <!-- New password input -->
+              <div>
+                <label for="snp_pw1" class="block text-ui-12 font-medium text-text-primary mb-1">New password</label>
+                <div class="relative flex items-center rounded-[4px]">
+                  <input id="snp_pw1" type="password" value="Algorithms2024" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 pr-14 text-ui-13 text-text-primary focus-ring">
+                  <button type="button" class="absolute right-2 text-ui-12 text-text-secondary hover:text-text-primary font-medium px-1.5 py-0.5 rounded focus-ring">Show</button>
+                </div>
+              </div>
+
+              <!-- Requirements List (Never color alone, text label explicit) -->
+              <div class="p-2.5 bg-editor border border-subtle-divider rounded-[2px] space-y-1.5">
+                <div class="text-ui-11 font-mono uppercase tracking-wider text-text-muted mb-1">Password Requirements:</div>
+                
+                <div class="flex items-center justify-between text-ui-12">
+                  <span class="text-text-secondary">At least 10 characters</span>
+                  <span class="font-mono text-ui-11 text-status-live flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-status-live"></span> Met
+                  </span>
+                </div>
+                <div class="flex items-center justify-between text-ui-12">
+                  <span class="text-text-secondary">At least one letter</span>
+                  <span class="font-mono text-ui-11 text-status-live flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-status-live"></span> Met
+                  </span>
+                </div>
+                <div class="flex items-center justify-between text-ui-12">
+                  <span class="text-text-secondary">At least one number</span>
+                  <span class="font-mono text-ui-11 text-status-live flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-status-live"></span> Met
+                  </span>
+                </div>
+              </div>
+
+              <!-- Confirm password input -->
+              <div>
+                <label for="snp_pw2" class="block text-ui-12 font-medium text-text-primary mb-1">Confirm new password</label>
+                <div class="relative flex items-center rounded-[4px]">
+                  <input id="snp_pw2" type="password" value="Algorithms2024" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 pr-14 text-ui-13 text-text-primary focus-ring">
+                  <button type="button" class="absolute right-2 text-ui-12 text-text-secondary hover:text-text-primary font-medium px-1.5 py-0.5 rounded focus-ring">Show</button>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full bg-btn-primary hover:bg-btn-primary-hover text-white font-medium text-ui-13 py-2 px-4 rounded-[4px] transition-colors focus-ring mt-2">
+                Set password
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-subtle-divider flex items-center justify-between text-ui-11 font-mono text-text-muted">
+          <span>Met / Not met text labels</span>
+          <span>Never color alone</span>
+        </div>
+      </div>
+
+      <!-- Flow 2B / 3: Link Expired State OR First-Login Password Change -->
+      <div class="bg-app border border-border rounded-[2px] p-6 relative flex flex-col justify-between min-h-[560px]">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-6 border-b border-subtle-divider">
+            <span class="text-ui-11 font-mono uppercase tracking-wider text-text-secondary">Flow 3 · First-Login Mandate</span>
+            <span class="text-ui-11 font-mono text-status-warning">Action Required</span>
+          </div>
+
+          <div class="mb-8">
+            <div class="font-semibold text-ui-14 text-text-primary font-mono tracking-tight">CodeClass</div>
+            <div class="text-text-secondary text-ui-12">Department of Computer Science</div>
+          </div>
+
+          <div class="w-full max-w-[380px] bg-pane border border-border rounded-[2px] p-5">
+            <!-- Non-dismissible mandatory banner -->
+            <div class="mb-4 p-3 bg-[#241c10] border-l-2 border-l-status-warning border-t border-r border-b border-border rounded-[2px]">
+              <div class="text-ui-12 text-text-primary">
+                <span class="font-medium text-status-warning">Temporary password issued.</span>
+                <p class="text-text-secondary mt-1">Your administrator issued a temporary password. Choose a new one to continue.</p>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <h1 class="text-ui-20 font-semibold text-text-primary tracking-tight">Set personal password</h1>
+              <p class="text-text-muted text-ui-12 font-mono">User: a.turing@univ.edu</p>
+            </div>
+
+            <form class="space-y-3" onsubmit="event.preventDefault()">
+              <div>
+                <label for="fl_pw1" class="block text-ui-12 font-medium text-text-primary mb-1">New password</label>
+                <input id="fl_pw1" type="password" placeholder="Minimum 10 characters" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 text-ui-13 text-text-primary focus-ring">
+              </div>
+
+              <!-- Unmet state showcase -->
+              <div class="p-2.5 bg-editor border border-subtle-divider rounded-[2px] space-y-1">
+                <div class="flex items-center justify-between text-ui-12">
+                  <span class="text-text-secondary">At least 10 characters</span>
+                  <span class="font-mono text-ui-11 text-text-muted flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-text-muted"></span> Not met
+                  </span>
+                </div>
+                <div class="flex items-center justify-between text-ui-12">
+                  <span class="text-text-secondary">At least one letter</span>
+                  <span class="font-mono text-ui-11 text-text-muted flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-text-muted"></span> Not met
+                  </span>
+                </div>
+                <div class="flex items-center justify-between text-ui-12">
+                  <span class="text-text-secondary">At least one number</span>
+                  <span class="font-mono text-ui-11 text-text-muted flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-text-muted"></span> Not met
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <label for="fl_pw2" class="block text-ui-12 font-medium text-text-primary mb-1">Confirm new password</label>
+                <input id="fl_pw2" type="password" placeholder="Re-enter new password" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 text-ui-13 text-text-primary focus-ring">
+              </div>
+
+              <button type="submit" class="w-full bg-btn-primary hover:bg-btn-primary-hover text-white font-medium text-ui-13 py-2 px-4 rounded-[4px] transition-colors focus-ring mt-1">
+                Save and continue to CodeClass
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-subtle-divider flex items-center justify-between text-ui-11 font-mono text-text-muted">
+          <span>Unskippable barrier</span>
+          <span>Requires full criteria pass</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Extra Sub-state: Expired / Invalid Token Banner Variant -->
+    <div class="mt-6 p-4 bg-pane border border-border rounded-[2px] flex items-center justify-between flex-wrap gap-4">
+      <div class="flex items-center gap-3">
+        <span class="px-2 py-0.5 text-ui-11 font-mono uppercase bg-[#1F1415] text-status-error border border-status-error/40 rounded font-semibold">Link State Variant</span>
+        <div class="text-ui-13">
+          <span class="text-status-error font-medium">Expired or Invalid Link:</span>
+          <span class="text-text-secondary ml-1">"This password reset link is invalid or has expired."</span>
+        </div>
+      </div>
+      <a href="#supporting-flows" class="px-3 py-1.5 bg-[#0D1117] hover:bg-hover-row border border-border text-text-primary rounded text-ui-12 font-medium focus-ring">
+        Request a new link &rarr;
+      </a>
+    </div>
+  </section>
+
+  <!-- SECTION 4: ACCESS DENIED SCREEN & CHANGE PASSWORD (INSIDE THE APP SHELL) -->
+  <section id="access-denied" class="mb-12">
+    <div class="mb-4">
+      <h2 class="text-ui-16 font-semibold text-text-primary">In-App Shell Screens: Access Control & Profile Settings</h2>
+      <p class="text-ui-12 text-text-secondary">Rendered within the persistent university header and student/instructor navigation chrome.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- ACCESS DENIED SCREEN -->
+      <div class="bg-app border border-border rounded-[2px] flex flex-col overflow-hidden">
+        <!-- Persistent App Header -->
+        <div class="bg-pane border-b border-border px-4 py-2 flex items-center justify-between text-ui-12">
+          <div class="flex items-center gap-3">
+            <span class="font-mono font-semibold text-text-primary">CodeClass</span>
+            <span class="text-text-muted">/</span>
+            <span class="text-text-secondary">Protected Resource</span>
+            <span class="text-text-muted">/</span>
+            <span class="text-status-error font-mono text-ui-11">HTTP 403</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-text-secondary">Alex Chen (Student)</span>
+            <div class="w-6 h-6 rounded bg-[#21262D] border border-border flex items-center justify-center text-text-muted font-mono text-ui-11">AC</div>
+          </div>
+        </div>
+
+        <!-- Shell Body with Minimal Sidebar and Centered Content -->
+        <div class="flex flex-1 min-h-[440px]">
+          <!-- Simplified Left Sidebar -->
+          <div class="w-48 bg-pane border-r border-border p-3 space-y-1 text-ui-12 hidden sm:block">
+            <div class="text-ui-11 font-mono uppercase text-text-muted px-2 py-1">Platform</div>
+            <div class="px-2 py-1.5 text-text-secondary hover:text-text-primary rounded">Live Classroom</div>
+            <div class="px-2 py-1.5 text-text-secondary hover:text-text-primary rounded">My Courses</div>
+            <div class="px-2 py-1.5 text-text-secondary hover:text-text-primary rounded">Assignments</div>
+            <div class="text-ui-11 font-mono uppercase text-text-muted px-2 pt-4 pb-1">Restricted</div>
+            <div class="px-2 py-1.5 bg-[#1F1415] border-l-2 border-status-error text-status-error font-medium">Instructor Panel</div>
+          </div>
+
+          <!-- Main Pane: Access Denied Message -->
+          <div class="flex-1 p-8 flex flex-col justify-start">
+            <div class="max-w-[440px] pt-8">
+              <!-- Error Badge -->
+              <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#1F1415] border border-status-error/30 text-status-error font-mono text-ui-11 mb-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-status-error"></span> Permission Restricted
+              </div>
+
+              <!-- Main Heading verbatim from specification -->
+              <h2 class="text-ui-20 font-semibold text-text-primary tracking-tight mb-2">You don't have access to this page.</h2>
+              <p class="text-text-secondary text-ui-13 leading-relaxed mb-6">
+                This section requires instructor or department administrator privileges. Your student account does not have authorization to view this resource.
+              </p>
+
+              <!-- Single Primary Action -->
+              <div>
+                <a href="#signin-states" class="inline-flex items-center gap-2 bg-btn-primary hover:bg-btn-primary-hover text-white font-medium text-ui-13 py-2 px-4 rounded-[4px] focus-ring">
+                  <span>Go to my home</span>
+                  <span class="font-mono text-ui-11">&rarr;</span>
+                </a>
+              </div>
+
+              <div class="mt-8 pt-4 border-t border-subtle-divider text-ui-12 text-text-muted">
+                If you believe this is in error, contact your course instructor or department administrator.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHANGE PASSWORD (SIGNED IN - PROFILE MODAL / SHELL VIEW) -->
+      <div class="bg-app border border-border rounded-[2px] flex flex-col overflow-hidden">
+        <!-- Persistent App Header -->
+        <div class="bg-pane border-b border-border px-4 py-2 flex items-center justify-between text-ui-12">
+          <div class="flex items-center gap-3">
+            <span class="font-mono font-semibold text-text-primary">CodeClass</span>
+            <span class="text-text-muted">/</span>
+            <span class="text-text-secondary">Account Settings</span>
+            <span class="text-text-muted">/</span>
+            <span class="text-text-primary font-medium">Security</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <!-- Success Toast Displayed in Header -->
+            <div class="px-2.5 py-1 bg-[#12261A] border border-status-live/40 text-status-live text-ui-11 font-mono rounded flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-status-live"></span>
+              <span>Password updated.</span>
+            </div>
+            <div class="w-6 h-6 rounded bg-[#21262D] border border-border flex items-center justify-center text-text-muted font-mono text-ui-11">LH</div>
+          </div>
+        </div>
+
+        <!-- Shell Body -->
+        <div class="flex flex-1 min-h-[440px]">
+          <!-- Simplified Left Sidebar -->
+          <div class="w-48 bg-pane border-r border-border p-3 space-y-1 text-ui-12 hidden sm:block">
+            <div class="text-ui-11 font-mono uppercase text-text-muted px-2 py-1">Settings</div>
+            <div class="px-2 py-1.5 text-text-secondary hover:text-text-primary rounded">Profile Info</div>
+            <div class="px-2 py-1.5 bg-[#1B2740] border-l-2 border-btn-primary text-text-primary font-medium">Password & Security</div>
+            <div class="px-2 py-1.5 text-text-secondary hover:text-text-primary rounded">IDE Preferences</div>
+            <div class="px-2 py-1.5 text-text-secondary hover:text-text-primary rounded">SSH Keys</div>
+          </div>
+
+          <!-- Main Pane: Change Password Form -->
+          <div class="flex-1 p-6">
+            <div class="max-w-[400px]">
+              <div class="mb-5 pb-3 border-b border-subtle-divider">
+                <h2 class="text-ui-16 font-semibold text-text-primary">Change password</h2>
+                <p class="text-text-secondary text-ui-12 mt-0.5">Manage your credentials for Dr. Lina Haddad (l.haddad@university.edu).</p>
+              </div>
+
+              <form class="space-y-4" onsubmit="event.preventDefault()">
+                <!-- Current Password -->
+                <div>
+                  <label for="cp_curr" class="block text-ui-12 font-medium text-text-primary mb-1">Current password</label>
+                  <div class="relative flex items-center rounded-[4px]">
+                    <input id="cp_curr" type="password" value="current12345" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 pr-14 text-ui-13 text-text-primary focus-ring">
+                    <button type="button" class="absolute right-2 text-ui-12 text-text-secondary hover:text-text-primary font-medium px-1.5 py-0.5 rounded focus-ring">Show</button>
+                  </div>
+                </div>
+
+                <!-- New Password -->
+                <div>
+                  <label for="cp_new" class="block text-ui-12 font-medium text-text-primary mb-1">New password</label>
+                  <div class="relative flex items-center rounded-[4px]">
+                    <input id="cp_new" type="password" placeholder="At least 10 chars with letters & numbers" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 pr-14 text-ui-13 text-text-primary focus-ring">
+                    <button type="button" class="absolute right-2 text-ui-12 text-text-secondary hover:text-text-primary font-medium px-1.5 py-0.5 rounded focus-ring">Show</button>
+                  </div>
+                </div>
+
+                <!-- Confirm New Password -->
+                <div>
+                  <label for="cp_conf" class="block text-ui-12 font-medium text-text-primary mb-1">Confirm new password</label>
+                  <div class="relative flex items-center rounded-[4px]">
+                    <input id="cp_conf" type="password" placeholder="Re-enter new password" class="w-full bg-editor border border-border rounded-[4px] px-3 py-2 pr-14 text-ui-13 text-text-primary focus-ring">
+                    <button type="button" class="absolute right-2 text-ui-12 text-text-secondary hover:text-text-primary font-medium px-1.5 py-0.5 rounded focus-ring">Show</button>
+                  </div>
+                </div>
+
+                <!-- Action Button Group -->
+                <div class="pt-2 flex items-center gap-3">
+                  <button type="submit" class="bg-btn-primary hover:bg-btn-primary-hover text-white font-medium text-ui-13 py-2 px-4 rounded-[4px] focus-ring">
+                    Save changes
+                  </button>
+                  <button type="button" class="bg-pane hover:bg-hover-row border border-border text-text-secondary hover:text-text-primary text-ui-13 py-2 px-3 rounded-[4px] focus-ring">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 5: MOBILE FRAMES (Responsive adaptations with >= 44px tap targets and 16px margins) -->
+  <section id="mobile-frames" class="mb-12">
+    <div class="mb-4 flex items-center justify-between">
+      <div>
+        <h2 class="text-ui-16 font-semibold text-text-primary">Mobile Adaptations (~390px Viewports)</h2>
+        <p class="text-ui-12 text-text-secondary">Full width with 16px side margins. Input fields and buttons sized to &ge; 44px height for touch ergonomics.</p>
+      </div>
+      <div class="text-ui-11 font-mono text-text-muted">MOBILE (390px VIEWPORTS · 44px TOUCH)</div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center">
+
+      <!-- Mobile Screen 1: Sign In (Default Empty) -->
+      <div class="w-full max-w-[390px] bg-app border border-border rounded-[8px] p-4 flex flex-col justify-between min-h-[640px] shadow-2xl">
+        <div>
+          <!-- Mobile Status Bar Emulation -->
+          <div class="flex items-center justify-between text-ui-11 font-mono text-text-muted pb-3 mb-4 border-b border-subtle-divider">
+            <span>09:41</span>
+            <span>CodeClass Mobile</span>
+            <span>100% [=]</span>
+          </div>
+
+          <!-- University Wordmark -->
+          <div class="mb-6">
+            <div class="font-semibold text-ui-14 text-text-primary font-mono tracking-tight">CodeClass</div>
+            <div class="text-text-secondary text-ui-12">Department of Computer Science</div>
+          </div>
+
+          <!-- Mobile Form Container (fills width with 16px margins) -->
+          <div class="bg-pane border border-border rounded-[4px] p-4">
+            <div class="mb-5">
+              <h1 class="text-ui-20 font-semibold text-text-primary tracking-tight">Sign in</h1>
+              <p class="text-text-secondary text-ui-13 mt-0.5">Use your university account.</p>
+            </div>
+
+            <form class="space-y-4" onsubmit="event.preventDefault()">
+              <!-- Email / ID (>=44px height) -->
+              <div>
+                <label for="m1_id" class="block text-ui-12 font-medium text-text-primary mb-1.5">University email or ID</label>
+                <input id="m1_id" type="text" placeholder="name@university.edu" class="w-full h-[44px] bg-editor border border-border rounded-[4px] px-3 text-ui-14 text-text-primary placeholder:text-text-muted focus-ring">
+              </div>
+
+              <!-- Password (>=44px height) -->
+              <div>
+                <label for="m1_pw" class="block text-ui-12 font-medium text-text-primary mb-1.5">Password</label>
+                <div class="relative flex items-center rounded-[4px]">
+                  <input id="m1_pw" type="password" placeholder="••••••••••••" class="w-full h-[44px] bg-editor border border-border rounded-[4px] px-3 pr-14 text-ui-14 text-text-primary focus-ring">
+                  <button type="button" class="absolute right-2 h-[34px] px-2 text-ui-12 text-text-secondary hover:text-text-primary font-medium rounded">Show</button>
+                </div>
+                <div class="mt-2">
+                  <a href="#" class="text-ui-12 text-btn-primary hover:underline">Forgot password?</a>
+                </div>
+              </div>
+
+              <!-- Primary Button (>=44px height) -->
+              <button type="submit" class="w-full h-[44px] bg-btn-primary hover:bg-btn-primary-hover text-white font-medium text-ui-14 rounded-[4px] transition-colors focus-ring">
+                Sign in
+              </button>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-subtle-divider text-ui-12 text-text-secondary space-y-1">
+              <p>Accounts are created by your department administrator.</p>
+              <p><a href="#" class="text-btn-primary hover:underline">Need help signing in?</a></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-subtle-divider text-center text-ui-11 font-mono text-text-muted">
+          Mobile Frame 1 · Core Sign-In
+        </div>
+      </div>
+
+      <!-- Mobile Screen 2: Deactivated Account -->
+      <div class="w-full max-w-[390px] bg-app border border-border rounded-[8px] p-4 flex flex-col justify-between min-h-[640px] shadow-2xl">
+        <div>
+          <!-- Mobile Status Bar Emulation -->
+          <div class="flex items-center justify-between text-ui-11 font-mono text-text-muted pb-3 mb-4 border-b border-subtle-divider">
+            <span>09:41</span>
+            <span>CodeClass Mobile</span>
+            <span>100% [=]</span>
+          </div>
+
+          <!-- University Wordmark -->
+          <div class="mb-6">
+            <div class="font-semibold text-ui-14 text-text-primary font-mono tracking-tight">CodeClass</div>
+            <div class="text-text-secondary text-ui-12">Department of Computer Science</div>
+          </div>
+
+          <!-- Mobile Form Container -->
+          <div class="bg-pane border border-border rounded-[4px] p-4">
+            <!-- Warning Banner -->
+            <div class="mb-4 p-3 bg-[#241c10] border border-status-warning/40 rounded-[2px]">
+              <div class="flex items-start gap-2">
+                <span class="text-status-warning font-mono text-ui-12 mt-0.5 font-bold">[!]</span>
+                <div class="text-ui-12 text-text-primary">
+                  <p class="font-medium text-status-warning mb-1">Account deactivated</p>
+                  <p class="text-text-secondary text-ui-12 leading-relaxed">Contact your department administrator to restore access.</p>
+                  <div class="mt-2.5">
+                    <a href="mailto:cs-admin@univ.edu" class="inline-flex items-center gap-1 text-ui-12 text-btn-primary hover:underline font-medium">
+                      <span>Contact administrator</span>
+                      <span class="text-ui-11 font-mono">&rarr;</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <h1 class="text-ui-20 font-semibold text-text-primary tracking-tight">Sign in</h1>
+            </div>
+
+            <form class="space-y-4" onsubmit="event.preventDefault()">
+              <div>
+                <label for="m2_id" class="block text-ui-12 font-medium text-text-primary mb-1.5">University email or ID</label>
+                <input id="m2_id" type="text" value="m.sullivan@univ.edu" class="w-full h-[44px] bg-editor border border-border rounded-[4px] px-3 text-ui-14 text-text-primary font-mono focus-ring">
+              </div>
+
+              <div>
+                <label for="m2_pw" class="block text-ui-12 font-medium text-text-primary mb-1.5">Password</label>
+                <div class="relative flex items-center rounded-[4px]">
+                  <input id="m2_pw" type="password" value="currentpass123" class="w-full h-[44px] bg-editor border border-border rounded-[4px] px-3 pr-14 text-ui-14 text-text-primary focus-ring">
+                  <button type="button" class="absolute right-2 h-[34px] px-2 text-ui-12 text-text-secondary hover:text-text-primary font-medium rounded">Show</button>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full h-[44px] bg-btn-primary hover:bg-btn-primary-hover text-white font-medium text-ui-14 rounded-[4px] transition-colors focus-ring">
+                Sign in
+              </button>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-subtle-divider text-ui-12 text-text-secondary">
+              <p>Accounts are created by your department administrator.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-subtle-divider text-center text-ui-11 font-mono text-text-muted">
+          Mobile Frame 2 · Deactivated Banner
+        </div>
+      </div>
+
+      <!-- Mobile Screen 3: Set New Password -->
+      <div class="w-full max-w-[390px] bg-app border border-border rounded-[8px] p-4 flex flex-col justify-between min-h-[640px] shadow-2xl">
+        <div>
+          <!-- Mobile Status Bar Emulation -->
+          <div class="flex items-center justify-between text-ui-11 font-mono text-text-muted pb-3 mb-4 border-b border-subtle-divider">
+            <span>09:41</span>
+            <span>CodeClass Mobile</span>
+            <span>100% [=]</span>
+          </div>
+
+          <!-- University Wordmark -->
+          <div class="mb-6">
+            <div class="font-semibold text-ui-14 text-text-primary font-mono tracking-tight">CodeClass</div>
+            <div class="text-text-secondary text-ui-12">Department of Computer Science</div>
+          </div>
+
+          <!-- Mobile Form Container -->
+          <div class="bg-pane border border-border rounded-[4px] p-4">
+            <div class="mb-4">
+              <h1 class="text-ui-20 font-semibold text-text-primary tracking-tight">Set new password</h1>
+              <p class="text-text-secondary text-ui-12 font-mono mt-0.5">l.haddad@university.edu</p>
+            </div>
+
+            <form class="space-y-3.5" onsubmit="event.preventDefault()">
+              <div>
+                <label for="m3_pw1" class="block text-ui-12 font-medium text-text-primary mb-1">New password</label>
+                <div class="relative flex items-center rounded-[4px]">
+                  <input id="m3_pw1" type="password" value="Algorithms2024" class="w-full h-[44px] bg-editor border border-border rounded-[4px] px-3 pr-14 text-ui-14 text-text-primary focus-ring">
+                  <button type="button" class="absolute right-2 h-[34px] px-2 text-ui-12 text-text-secondary hover:text-text-primary font-medium rounded">Show</button>
+                </div>
+              </div>
+
+              <!-- Explicit Requirements (Met / Not met) -->
+              <div class="p-2.5 bg-editor border border-subtle-divider rounded-[2px] space-y-1">
+                <div class="flex items-center justify-between text-ui-12">
+                  <span class="text-text-secondary">At least 10 characters</span>
+                  <span class="font-mono text-ui-11 text-status-live flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-status-live"></span> Met
+                  </span>
+                </div>
+                <div class="flex items-center justify-between text-ui-12">
+                  <span class="text-text-secondary">At least one letter</span>
+                  <span class="font-mono text-ui-11 text-status-live flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-status-live"></span> Met
+                  </span>
+                </div>
+                <div class="flex items-center justify-between text-ui-12">
+                  <span class="text-text-secondary">At least one number</span>
+                  <span class="font-mono text-ui-11 text-status-live flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-status-live"></span> Met
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <label for="m3_pw2" class="block text-ui-12 font-medium text-text-primary mb-1">Confirm new password</label>
+                <div class="relative flex items-center rounded-[4px]">
+                  <input id="m3_pw2" type="password" value="Algorithms2024" class="w-full h-[44px] bg-editor border border-border rounded-[4px] px-3 pr-14 text-ui-14 text-text-primary focus-ring">
+                  <button type="button" class="absolute right-2 h-[34px] px-2 text-ui-12 text-text-secondary hover:text-text-primary font-medium rounded">Show</button>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full h-[44px] bg-btn-primary hover:bg-btn-primary-hover text-white font-medium text-ui-14 rounded-[4px] transition-colors focus-ring mt-2">
+                Set password
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-subtle-divider text-center text-ui-11 font-mono text-text-muted">
+          Mobile Frame 3 · Set Password
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Interactive script for Show/Hide text toggle buttons -->
+  <script>
+    document.querySelectorAll('button').forEach(btn => {
+      if (btn.innerText.trim() === 'Show' || btn.innerText.trim() === 'Hide') {
+        btn.addEventListener('click', () => {
+          const container = btn.closest('div');
+          const input = container.querySelector('input');
+          if (input) {
+            if (input.type === 'password') {
+              input.type = 'text';
+              btn.innerText = 'Hide';
+            } else {
+              input.type = 'password';
+              btn.innerText = 'Show';
+            }
+          }
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+!.example.env
+
+**/node_modules/
+**/.angular/
+**/dist/
+**/out-tsc/
+**/logs/
+
+# .NET build and test output
+**/bin/
+**/obj/
+**/TestResults/

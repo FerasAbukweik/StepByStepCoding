@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeClass - Student Home & Shared "My Lectures" Navigation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Geist', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"Geist Mono"', 'JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            app: '#0D1117',
+            surface: '#161B22',
+            surfaceHover: '#1C232C',
+            editor: '#0B0F14',
+            borderSubtle: '#21262D',
+            borderPrimary: '#30363D',
+            textPrimary: '#E6EDF3',
+            textSecondary: '#8B949E',
+            textMuted: '#6E7681',
+            accentBlue: '#2F6FEB',
+            accentBlueHover: '#4A83F0',
+            accentSelectedBg: '#1B2740',
+            focusOutline: '#58A6FF',
+            statusLive: '#3FB950',
+            statusLiveBg: '#12261A',
+            statusWarning: '#D29922',
+            statusError: '#F85149',
+          },
+          fontSize: {
+            '2xs': ['10px', '14px'],
+            'xs': ['11px', '15px'],
+            'sm': ['12px', '16px'],
+            'base': ['13px', '18px'],
+            'md': ['14px', '20px'],
+            'lg': ['16px', '22px'],
+            'xl': ['20px', '26px'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Strict Department Engineering Tool Ergonomics */
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      background-color: #080b0f;
+      color: #E6EDF3;
+      font-family: 'Geist', sans-serif;
+      font-size: 13px;
+      line-height: 1.4;
+      margin: 0;
+      padding: 24px;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #21262D;
+      border-radius: 2px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #30363D;
+    }
+    .selected-nav {
+      background-color: #1B2740 !important;
+      border-left: 2px solid #2F6FEB !important;
+      color: #E6EDF3 !important;
+    }
+    .tabular {
+      font-feature-settings: "tnum" 1;
+    }
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 2px solid #58A6FF !important;
+      outline-offset: 1px;
+    }
+    .live-row-bg {
+      background-color: #12261A;
+    }
+  </style>
+</head>
+<body class="selection:bg-blue-900 selection:text-white">
+
+  <!-- TOP SPECIFICATION HEADER -->
+  <header class="mb-8 pb-4 border-b border-borderSubtle flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-xs uppercase px-1.5 py-0.5 rounded bg-surface border border-borderPrimary text-textSecondary font-medium">Design System Spec</span>
+        <span class="text-textSecondary text-xs">University Computer Science Laboratory · Department of Computer Science</span>
+      </div>
+      <h1 class="text-xl font-semibold text-textPrimary mt-1">CodeClass — Student Home & Shared "My Lectures" Sidebar</h1>
+      <p class="text-textSecondary text-xs mt-0.5">Desktop 1440px multi-frame view + full state matrix + mobile navigation drawer and dynamic live bar</p>
+    </div>
+    <div class="flex items-center gap-3 font-mono text-xs">
+      <span class="flex items-center gap-1.5 text-textSecondary"><span class="w-2 h-2 rounded-full bg-statusLive"></span> Live Now: #3FB950</span>
+      <span class="flex items-center gap-1.5 text-textSecondary"><span class="w-2 h-2 rounded-full bg-accentBlue"></span> Action/Selected: #2F6FEB</span>
+      <span class="flex items-center gap-1.5 text-textSecondary"><span class="w-2 h-2 rounded-full bg-statusWarning"></span> Amber Warning: #D29922</span>
+      <span class="flex items-center gap-1.5 text-textSecondary"><span class="w-2 h-2 rounded-full bg-statusError"></span> Error: #F85149</span>
+    </div>
+  </header>
+
+  <!-- JUMP LINKS FOR STATES -->
+  <nav aria-label="States Navigation" class="mb-8 flex flex-wrap gap-2 text-xs font-mono">
+    <a href="#state-populated" class="px-2.5 py-1 bg-surface border border-borderPrimary hover:border-textSecondary rounded text-textPrimary">1. Populated Home (Live + Table + Exams)</a>
+    <a href="#state-nolive" class="px-2.5 py-1 bg-surface border border-borderPrimary hover:border-textSecondary rounded text-textSecondary hover:text-textPrimary">2. No Live Lectures</a>
+    <a href="#state-empty" class="px-2.5 py-1 bg-surface border border-borderPrimary hover:border-textSecondary rounded text-textSecondary hover:text-textPrimary">3. Empty (No Enrollments)</a>
+    <a href="#state-loading" class="px-2.5 py-1 bg-surface border border-borderPrimary hover:border-textSecondary rounded text-textSecondary hover:text-textPrimary">4. Loading Skeletons</a>
+    <a href="#state-error" class="px-2.5 py-1 bg-surface border border-borderPrimary hover:border-textSecondary rounded text-textSecondary hover:text-textPrimary">5. Error Loading Overview</a>
+    <a href="#state-reconnect" class="px-2.5 py-1 bg-surface border border-borderPrimary hover:border-textSecondary rounded text-textSecondary hover:text-textPrimary">6. Disconnected (Sidebar & Home)</a>
+    <a href="#state-sequence" class="px-2.5 py-1 bg-surface border border-borderPrimary hover:border-textSecondary rounded text-textSecondary hover:text-textPrimary">7. Status Progression Sequence</a>
+    <a href="#state-accessdenied" class="px-2.5 py-1 bg-surface border border-borderPrimary hover:border-textSecondary rounded text-textSecondary hover:text-textPrimary">8. Access Denied (Inside Shell)</a>
+    <a href="#state-mobile" class="px-2.5 py-1 bg-surface border border-borderPrimary hover:border-textSecondary rounded text-textSecondary hover:text-textPrimary">9. Mobile Adaptations</a>
+  </nav>
+
+  <!-- SCREEN STATE 1: COMPLETE POPULATED STUDENT HOME (DESKTOP) -->
+  <section id="state-populated" class="mb-14">
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-xs uppercase px-2 py-0.5 rounded bg-accentSelectedBg text-accentBlue font-medium border border-blue-900/60">State 1 · Canonical Production View</span>
+        <h2 class="text-md font-medium text-textPrimary">Student Home (Populated with 1 Live, 1 Waiting, 2 Scheduled, 1 Ended)</h2>
+      </div>
+      <span class="text-textSecondary text-xs font-mono">Viewport: 1360px · 4px Grid · 1px Borders</span>
+    </div>
+
+    <!-- Outer Desktop App Container -->
+    <div class="w-full bg-app border border-borderPrimary rounded flex overflow-hidden shadow-2xl" style="min-height: 820px;">
+      
+      <!-- ============================================== -->
+      <!-- SHARED PERSISTENT STUDENT SIDEBAR              -->
+      <!-- ============================================== -->
+      <aside class="w-64 bg-surface border-r border-borderPrimary flex flex-col shrink-0 select-none">
+        
+        <!-- Wordmark & Department -->
+        <div class="h-12 border-b border-borderPrimary px-4 flex items-center gap-2 shrink-0">
+          <div class="w-2.5 h-2.5 bg-accentBlue rounded-sm"></div>
+          <span class="font-semibold text-textPrimary tracking-tight text-md">CodeClass</span>
+          <span class="text-textMuted text-xs font-mono ml-auto">CS Dept</span>
+        </div>
+
+        <!-- Main Navigation Links (Static, doesn't scroll with lectures) -->
+        <div class="py-2.5 px-2 border-b border-borderSubtle shrink-0">
+          <nav class="space-y-0.5" aria-label="Main Navigation">
+            <a href="#home" class="selected-nav flex items-center justify-between px-2.5 py-1.5 rounded-sm text-base font-medium transition-colors">
+              <span class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-accentBlue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <span>Home</span>
+              </span>
+              <span class="w-1.5 h-1.5 rounded-full bg-accentBlue"></span>
+            </a>
+            <a href="#courses" class="flex items-center gap-2 px-2.5 py-1.5 rounded-sm text-base text-textSecondary hover:text-textPrimary hover:bg-surfaceHover transition-colors border-l-2 border-transparent">
+              <svg class="w-4 h-4 text-textMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              <span>My Courses</span>
+            </a>
+            <a href="#exams" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm text-base text-textSecondary hover:text-textPrimary hover:bg-surfaceHover transition-colors border-l-2 border-transparent">
+              <span class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-textMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span>Exams</span>
+              </span>
+              <span class="font-mono text-2xs px-1.5 py-0.2 bg-amber-950/60 border border-amber-800 text-statusWarning rounded">1 active</span>
+            </a>
+            <a href="#workspace" class="flex items-center gap-2 px-2.5 py-1.5 rounded-sm text-base text-textSecondary hover:text-textPrimary hover:bg-surfaceHover transition-colors border-l-2 border-transparent">
+              <svg class="w-4 h-4 text-textMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+              <span>My Workspace</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Independent Scroll Area: "MY LECTURES" Section -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-2 flex flex-col space-y-4" aria-label="My Lectures Schedule">
+          
+          <!-- TODAY GROUP -->
+          <div>
+            <div class="px-2 py-1 flex items-center justify-between">
+              <span class="text-xs font-mono uppercase text-textMuted tracking-wider font-semibold">Today</span>
+              <span class="text-2xs font-mono text-textMuted tabular px-1 rounded bg-app border border-borderSubtle">3</span>
+            </div>
+
+            <div class="mt-1 space-y-1">
+              
+              <!-- 1. LIVE NOW ROW (CS 201) -->
+              <div class="group relative rounded-sm border border-emerald-900/60 bg-statusLiveBg p-2 hover:border-emerald-700/80 transition-all" tabindex="0" role="link" title="CS 201: Dynamic Stack & Memory Management (Started 14:02)">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-emerald-400 font-medium font-mono">CS 201</span>
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-statusLive animate-pulse"></span>
+                    <span class="text-2xs font-medium text-emerald-300">Live now</span>
+                  </div>
+                </div>
+                <div class="text-base font-medium text-textPrimary truncate mt-0.5 group-hover:text-white">Dynamic Stack & Memory</div>
+                <div class="flex items-center justify-between mt-2 pt-1.5 border-t border-emerald-900/40">
+                  <span class="font-mono text-xs text-textSecondary tabular">14:00 – 15:30</span>
+                  <a href="#join-cs201" class="px-2 py-0.5 bg-statusLive hover:bg-emerald-400 text-black font-semibold text-xs rounded transition-colors" tabindex="0">
+                    Join
+                  </a>
+                </div>
+              </div>
+
+              <!-- 2. WAITING FOR INSTRUCTOR ROW (CS 101) -->
+              <div class="group rounded-sm border border-borderSubtle bg-app p-2 hover:bg-surfaceHover hover:border-borderPrimary transition-all" tabindex="0" role="link" title="CS 101: Recursion & Call Stacks (Scheduled 14:30)">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-textSecondary font-mono">CS 101</span>
+                  <span class="text-2xs text-textSecondary">Waiting for instructor</span>
+                </div>
+                <div class="text-base font-medium text-textPrimary truncate mt-0.5">Recursion & Call Stacks</div>
+                <div class="flex items-center justify-between mt-1.5 text-xs">
+                  <span class="font-mono text-textMuted tabular">14:30</span>
+                  <span class="text-textMuted text-2xs">Dr. Omar Nasser</span>
+                </div>
+              </div>
+
+              <!-- 3. ENDED ROW (CS 305) -->
+              <div class="group rounded-sm border border-borderSubtle bg-app/60 p-2 hover:bg-surfaceHover transition-all opacity-85" tabindex="0" role="link" title="CS 305: Process Scheduling (Ended 11:30)">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-textMuted font-mono">CS 305</span>
+                  <span class="text-2xs text-textMuted">Ended</span>
+                </div>
+                <div class="text-base text-textSecondary truncate mt-0.5">Process Scheduling Basics</div>
+                <div class="flex items-center justify-between mt-1.5 text-xs">
+                  <span class="font-mono text-textMuted tabular">10:00 – 11:30</span>
+                  <a href="#saved-cs305" class="text-accentBlue hover:underline text-xs flex items-center gap-1" tabindex="0">
+                    <span>Saved code</span>
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- UPCOMING GROUP -->
+          <div>
+            <div class="px-2 py-1 flex items-center justify-between">
+              <span class="text-xs font-mono uppercase text-textMuted tracking-wider font-semibold">Upcoming</span>
+              <span class="text-2xs font-mono text-textMuted tabular px-1 rounded bg-app border border-borderSubtle">2</span>
+            </div>
+
+            <div class="mt-1 space-y-1">
+              <!-- Scheduled Row 1 -->
+              <div class="group rounded-sm border border-borderSubtle bg-app p-2 hover:bg-surfaceHover transition-all" tabindex="0" role="link" title="CS 201: Queue & Buffer Implementations (Thu 13 Nov · 10:00)">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-textSecondary font-mono">CS 201</span>
+                  <span class="text-2xs font-mono text-textMuted tabular">Thu 13 Nov</span>
+                </div>
+                <div class="text-base font-medium text-textPrimary truncate mt-0.5">Queue & Circular Buffers</div>
+                <div class="flex items-center justify-between mt-1 text-xs">
+                  <span class="font-mono text-textMuted tabular">10:00 – 11:30</span>
+                  <span class="text-textMuted text-2xs">Sec B</span>
+                </div>
+              </div>
+
+              <!-- Scheduled Row 2 -->
+              <div class="group rounded-sm border border-borderSubtle bg-app p-2 hover:bg-surfaceHover transition-all" tabindex="0" role="link" title="CS 101: Arrays & Pointers in C++ (Fri 14 Nov · 14:00)">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-textSecondary font-mono">CS 101</span>
+                  <span class="text-2xs font-mono text-textMuted tabular">Fri 14 Nov</span>
+                </div>
+                <div class="text-base font-medium text-textPrimary truncate mt-0.5">Pointers & Direct Memory</div>
+                <div class="flex items-center justify-between mt-1 text-xs">
+                  <span class="font-mono text-textMuted tabular">14:00 – 15:30</span>
+                  <span class="text-textMuted text-2xs">Sec A</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sidebar Footer / Cluster Health -->
+        <div class="p-2 border-t border-borderSubtle bg-surface text-2xs font-mono text-textMuted flex items-center justify-between">
+          <span class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-statusLive"></span>
+            <span>Sync: Connected</span>
+          </span>
+          <span class="tabular">18ms</span>
+        </div>
+      </aside>
+
+      <!-- ============================================== -->
+      <!-- MAIN STUDENT HOME CONTENT AREA                 -->
+      <!-- ============================================== -->
+      <main class="flex-1 flex flex-col min-w-0 bg-app overflow-y-auto custom-scrollbar">
+        
+        <!-- COMPACT HEADER WITH BREADCRUMBS & PROFILE -->
+        <header class="h-12 border-b border-borderPrimary px-6 flex items-center justify-between bg-surface shrink-0">
+          <div class="flex items-center gap-2 text-xs font-mono text-textSecondary">
+            <span class="text-textMuted">student</span>
+            <span class="text-borderPrimary">/</span>
+            <span class="text-textPrimary font-medium">home</span>
+            <span class="text-borderPrimary">/</span>
+            <span class="text-textSecondary">overview</span>
+          </div>
+
+          <!-- Profile Menu -->
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded bg-accentSelectedBg border border-blue-800 text-accentBlue flex items-center justify-center font-mono text-2xs font-bold">
+                RK
+              </div>
+              <div class="flex flex-col text-left">
+                <span class="text-xs font-medium text-textPrimary leading-none">Rania Khalil</span>
+                <span class="text-2xs text-textMuted font-mono leading-tight mt-0.5">r.khalil@univ.edu</span>
+              </div>
+            </div>
+            
+            <div class="h-4 w-px bg-borderPrimary"></div>
+
+            <div class="flex items-center gap-2 text-xs">
+              <a href="#change-password" class="text-textSecondary hover:text-textPrimary text-xs hover:underline">Change password</a>
+              <span class="text-borderPrimary">·</span>
+              <a href="#signout" class="text-textSecondary hover:text-statusError text-xs hover:underline">Sign out</a>
+            </div>
+          </div>
+        </header>
+
+        <!-- MAIN DASHBOARD BODY (2 COLUMN SPLIT: MAIN + NARROW RIGHT) -->
+        <div class="p-6 flex-1 flex flex-col xl:flex-row gap-6 min-w-0">
+          
+          <!-- LEFT / PRIMARY COLUMN -->
+          <div class="flex-1 min-w-0 space-y-6">
+
+            <!-- 1. LIVE NOW SECTION (Only shown when a lecture is live) -->
+            <section aria-labelledby="live-section-heading">
+              <div class="border border-emerald-900 bg-statusLiveBg rounded-sm p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-start gap-3">
+                  <div class="mt-0.5 flex items-center justify-center">
+                    <span class="w-2.5 h-2.5 rounded-full bg-statusLive animate-pulse"></span>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="font-mono text-xs uppercase font-bold text-emerald-400">Live Now</span>
+                      <span class="text-textMuted text-xs">·</span>
+                      <span class="font-mono text-xs text-textSecondary font-semibold">CS 201 Data Structures (Section B)</span>
+                      <span class="text-textMuted text-xs">·</span>
+                      <span class="font-mono text-xs text-emerald-300 tabular">Started 14:02</span>
+                    </div>
+                    <h3 class="text-md font-semibold text-white mt-1">Lecture 14: Dynamic Stack & Memory Management</h3>
+                    <p class="text-xs text-textSecondary mt-0.5">Instructor: Dr. Lina Haddad · 42 students currently connected</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-3 shrink-0">
+                  <a href="#join-live" class="px-4 py-2 bg-statusLive hover:bg-emerald-400 text-black font-semibold text-base rounded transition-colors flex items-center gap-2 shadow-sm">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+                    <span>Join lecture</span>
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            <!-- 2. TODAY'S LECTURES (Table directly on page, no card wrapper) -->
+            <section aria-labelledby="today-heading">
+              <div class="flex items-center justify-between pb-2 border-b border-borderSubtle">
+                <h3 id="today-heading" class="text-sm font-semibold uppercase tracking-wider text-textSecondary font-mono">Today's Lectures</h3>
+                <span class="text-xs text-textMuted font-mono tabular">Wed 12 Nov 2024</span>
+              </div>
+
+              <div class="mt-2 overflow-x-auto">
+                <table class="w-full text-left border-collapse" style="font-size: 13px;">
+                  <thead>
+                    <tr class="border-b border-borderPrimary text-2xs uppercase font-mono text-textMuted tracking-wider">
+                      <th class="py-2 pr-4 font-semibold">Time</th>
+                      <th class="py-2 px-4 font-semibold">Course</th>
+                      <th class="py-2 px-4 font-semibold">Lecture</th>
+                      <th class="py-2 px-4 font-semibold">Instructor</th>
+                      <th class="py-2 px-4 font-semibold">Status</th>
+                      <th class="py-2 pl-4 text-right font-semibold">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-borderSubtle">
+                    <!-- Row 1: Ended -->
+                    <tr class="hover:bg-surfaceHover transition-colors">
+                      <td class="py-2.5 pr-4 font-mono text-textMuted tabular">10:00</td>
+                      <td class="py-2.5 px-4 font-mono text-textSecondary">CS 305</td>
+                      <td class="py-2.5 px-4 font-medium text-textPrimary">Process Scheduling Basics</td>
+                      <td class="py-2.5 px-4 text-textSecondary">Dr. Alan Turing</td>
+                      <td class="py-2.5 px-4">
+                        <span class="inline-flex items-center gap-1.5 text-xs text-textMuted font-mono">
+                          <span class="w-1.5 h-1.5 rounded-full bg-textMuted"></span> Ended
+                        </span>
+                      </td>
+                      <td class="py-2.5 pl-4 text-right">
+                        <a href="#saved" class="text-accentBlue hover:underline text-xs">Open saved code</a>
+                      </td>
+                    </tr>
+                    
+                    <!-- Row 2: Live now -->
+                    <tr class="live-row-bg hover:bg-emerald-950/60 transition-colors">
+                      <td class="py-2.5 pr-4 font-mono text-emerald-400 font-medium tabular">14:00</td>
+                      <td class="py-2.5 px-4 font-mono text-emerald-400 font-medium">CS 201</td>
+                      <td class="py-2.5 px-4 font-semibold text-white">Dynamic Stack & Memory</td>
+                      <td class="py-2.5 px-4 text-emerald-300">Dr. Lina Haddad</td>
+                      <td class="py-2.5 px-4">
+                        <span class="inline-flex items-center gap-1.5 text-xs text-emerald-400 font-mono font-medium">
+                          <span class="w-1.5 h-1.5 rounded-full bg-statusLive animate-pulse"></span> Live now
+                        </span>
+                      </td>
+                      <td class="py-2.5 pl-4 text-right">
+                        <a href="#join" class="px-2.5 py-1 bg-statusLive hover:bg-emerald-400 text-black text-xs font-semibold rounded">Join</a>
+                      </td>
+                    </tr>
+
+                    <!-- Row 3: Waiting for instructor -->
+                    <tr class="hover:bg-surfaceHover transition-colors">
+                      <td class="py-2.5 pr-4 font-mono text-textPrimary tabular">14:30</td>
+                      <td class="py-2.5 px-4 font-mono text-textSecondary">CS 101</td>
+                      <td class="py-2.5 px-4 font-medium text-textPrimary">Recursion & Call Stacks</td>
+                      <td class="py-2.5 px-4 text-textSecondary">Dr. Omar Nasser</td>
+                      <td class="py-2.5 px-4">
+                        <span class="inline-flex items-center gap-1.5 text-xs text-textSecondary font-mono">
+                          <span class="w-1.5 h-1.5 rounded-full bg-borderPrimary"></span> Waiting for instructor
+                        </span>
+                      </td>
+                      <td class="py-2.5 pl-4 text-right">
+                        <span class="text-textMuted text-xs">Available shortly</span>
+                      </td>
+                    </tr>
+
+                    <!-- Row 4: Scheduled -->
+                    <tr class="hover:bg-surfaceHover transition-colors">
+                      <td class="py-2.5 pr-4 font-mono text-textMuted tabular">16:30</td>
+                      <td class="py-2.5 px-4 font-mono text-textSecondary">CS 101</td>
+                      <td class="py-2.5 px-4 font-medium text-textPrimary">Lab 04: Pointers Debugging</td>
+                      <td class="py-2.5 px-4 text-textSecondary">TA Alex Miller</td>
+                      <td class="py-2.5 px-4">
+                        <span class="inline-flex items-center gap-1.5 text-xs text-textMuted font-mono">
+                          <span class="w-1.5 h-1.5 rounded-full bg-borderPrimary"></span> Scheduled
+                        </span>
+                      </td>
+                      <td class="py-2.5 pl-4 text-right">
+                        <span class="text-textMuted text-xs tabular">In 2 hours</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <!-- 3. UPCOMING & ACTIVE EXAMS (Table) -->
+            <section aria-labelledby="exams-heading">
+              <div class="flex items-center justify-between pb-2 border-b border-borderSubtle">
+                <div class="flex items-center gap-2">
+                  <h3 id="exams-heading" class="text-sm font-semibold uppercase tracking-wider text-textSecondary font-mono">Programming Exams</h3>
+                  <span class="px-1.5 py-0.2 rounded bg-amber-950/60 border border-amber-800 text-statusWarning font-mono text-2xs font-semibold">1 Open now</span>
+                </div>
+                <a href="#all-exams" class="text-xs text-accentBlue hover:underline">View all exams &rarr;</a>
+              </div>
+
+              <div class="mt-2 overflow-x-auto">
+                <table class="w-full text-left border-collapse" style="font-size: 13px;">
+                  <thead>
+                    <tr class="border-b border-borderPrimary text-2xs uppercase font-mono text-textMuted tracking-wider">
+                      <th class="py-2 pr-4 font-semibold">Exam Title</th>
+                      <th class="py-2 px-4 font-semibold">Course · Section</th>
+                      <th class="py-2 px-4 font-semibold">Opens</th>
+                      <th class="py-2 px-4 font-semibold">Deadline</th>
+                      <th class="py-2 px-4 font-semibold">Status</th>
+                      <th class="py-2 pl-4 text-right font-semibold">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-borderSubtle">
+                    <!-- Exam 1: Open now -->
+                    <tr class="bg-amber-950/20 hover:bg-amber-950/40 transition-colors">
+                      <td class="py-2.5 pr-4">
+                        <div class="font-medium text-textPrimary">CS 201 Midterm Practical</div>
+                        <div class="text-2xs text-textMuted font-mono">C++17 · 3 problems · 90 min limit</div>
+                      </td>
+                      <td class="py-2.5 px-4 font-mono text-textSecondary">CS 201 · Sec B</td>
+                      <td class="py-2.5 px-4 font-mono text-textSecondary tabular">Today 12:00</td>
+                      <td class="py-2.5 px-4 font-mono text-statusWarning tabular font-semibold">Today 23:59</td>
+                      <td class="py-2.5 px-4">
+                        <span class="inline-flex items-center gap-1.5 text-xs text-statusWarning font-mono font-medium">
+                          <span class="w-1.5 h-1.5 rounded-full bg-statusWarning"></span> Open now
+                        </span>
+                      </td>
+                      <td class="py-2.5 pl-4 text-right">
+                        <a href="#start-exam" class="px-3 py-1 bg-accentBlue hover:bg-accentBlueHover text-white font-medium text-xs rounded transition-colors inline-block">
+                          Start exam
+                        </a>
+                      </td>
+                    </tr>
+
+                    <!-- Exam 2: Submitted / Awaiting Review -->
+                    <tr class="hover:bg-surfaceHover transition-colors">
+                      <td class="py-2.5 pr-4">
+                        <div class="font-medium text-textPrimary">CS 101 Loops & Arrays Quiz</div>
+                        <div class="text-2xs text-textMuted font-mono">Attempt 1 submitted Nov 10</div>
+                      </td>
+                      <td class="py-2.5 px-4 font-mono text-textSecondary">CS 101 · Sec A</td>
+                      <td class="py-2.5 px-4 font-mono text-textMuted tabular">10 Nov 09:00</td>
+                      <td class="py-2.5 px-4 font-mono text-textMuted tabular">10 Nov 18:00</td>
+                      <td class="py-2.5 px-4">
+                        <span class="inline-flex items-center gap-1.5 text-xs text-textSecondary font-mono">
+                          <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Awaiting instructor review
+                        </span>
+                      </td>
+                      <td class="py-2.5 pl-4 text-right">
+                        <a href="#view-submission" class="text-textSecondary hover:text-textPrimary text-xs hover:underline">View submission</a>
+                      </td>
+                    </tr>
+
+                    <!-- Exam 3: Upcoming -->
+                    <tr class="hover:bg-surfaceHover transition-colors">
+                      <td class="py-2.5 pr-4">
+                        <div class="font-medium text-textPrimary">CS 305 Concurrency Assessment</div>
+                        <div class="text-2xs text-textMuted font-mono">POSIX Threads & Mutexes</div>
+                      </td>
+                      <td class="py-2.5 px-4 font-mono text-textSecondary">CS 305 · Sec A</td>
+                      <td class="py-2.5 px-4 font-mono text-textSecondary tabular">Fri 14 Nov 10:00</td>
+                      <td class="py-2.5 px-4 font-mono text-textMuted tabular">Fri 14 Nov 12:00</td>
+                      <td class="py-2.5 px-4">
+                        <span class="inline-flex items-center gap-1.5 text-xs text-textMuted font-mono">
+                          <span class="w-1.5 h-1.5 rounded-full bg-borderPrimary"></span> Opens in 2 days
+                        </span>
+                      </td>
+                      <td class="py-2.5 pl-4 text-right">
+                        <span class="text-textMuted text-xs">Locked</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <!-- 4. MY COURSES (Plain list, not a grid of tiles) -->
+            <section aria-labelledby="courses-heading">
+              <div class="flex items-center justify-between pb-2 border-b border-borderSubtle">
+                <h3 id="courses-heading" class="text-sm font-semibold uppercase tracking-wider text-textSecondary font-mono">My Enrolled Courses</h3>
+                <span class="text-xs text-textMuted font-mono tabular">3 sections</span>
+              </div>
+
+              <div class="mt-2 divide-y divide-borderSubtle border-b border-borderSubtle">
+                <!-- Course 1 -->
+                <div class="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-surfaceHover px-2 -mx-2 rounded transition-colors group">
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="font-mono text-xs font-semibold text-accentBlue">CS 201</span>
+                      <a href="#course-cs201" class="text-base font-medium text-textPrimary group-hover:text-white group-hover:underline">Data Structures</a>
+                    </div>
+                    <div class="text-xs text-textSecondary mt-0.5">Section B · Dr. Lina Haddad · Mon/Wed 14:00 · Lab 302</div>
+                  </div>
+                  <div class="flex items-center gap-4 text-xs font-mono">
+                    <span class="text-emerald-400 flex items-center gap-1.5">
+                      <span class="w-1.5 h-1.5 rounded-full bg-statusLive"></span> Lecture live
+                    </span>
+                    <a href="#course-cs201" class="text-textSecondary hover:text-textPrimary hover:underline">Open course &rarr;</a>
+                  </div>
+                </div>
+
+                <!-- Course 2 -->
+                <div class="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-surfaceHover px-2 -mx-2 rounded transition-colors group">
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="font-mono text-xs font-semibold text-accentBlue">CS 101</span>
+                      <a href="#course-cs101" class="text-base font-medium text-textPrimary group-hover:text-white group-hover:underline">Introduction to Programming</a>
+                    </div>
+                    <div class="text-xs text-textSecondary mt-0.5">Section A · Dr. Omar Nasser · Tue/Thu 14:30 · Room 105</div>
+                  </div>
+                  <div class="flex items-center gap-4 text-xs font-mono">
+                    <span class="text-textMuted">Next: Today 14:30</span>
+                    <a href="#course-cs101" class="text-textSecondary hover:text-textPrimary hover:underline">Open course &rarr;</a>
+                  </div>
+                </div>
+
+                <!-- Course 3 -->
+                <div class="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-surfaceHover px-2 -mx-2 rounded transition-colors group">
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="font-mono text-xs font-semibold text-accentBlue">CS 305</span>
+                      <a href="#course-cs305" class="text-base font-medium text-textPrimary group-hover:text-white group-hover:underline">Operating Systems</a>
+                    </div>
+                    <div class="text-xs text-textSecondary mt-0.5">Section A · Dr. Alan Turing · Mon/Wed 10:00 · Hall 4</div>
+                  </div>
+                  <div class="flex items-center gap-4 text-xs font-mono">
+                    <span class="text-textMuted">Next: Mon 17 Nov 10:00</span>
+                    <a href="#course-cs305" class="text-textSecondary hover:text-textPrimary hover:underline">Open course &rarr;</a>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- 5. RECENTLY COMPLETED LECTURES -->
+            <section aria-labelledby="recent-heading" class="pb-6">
+              <div class="flex items-center justify-between pb-2 border-b border-borderSubtle">
+                <h3 id="recent-heading" class="text-sm font-semibold uppercase tracking-wider text-textSecondary font-mono">Recently Completed Lectures</h3>
+                <span class="text-xs text-textMuted font-mono">Last 5 archived</span>
+              </div>
+
+              <div class="mt-2 divide-y divide-borderSubtle">
+                <div class="py-2 flex items-center justify-between text-xs">
+                  <div class="flex items-center gap-3">
+                    <span class="font-mono text-textMuted tabular w-20">Today</span>
+                    <span class="font-mono text-textSecondary w-16">CS 305</span>
+                    <span class="text-textPrimary font-medium">Lecture 11: Process Scheduling Basics</span>
+                  </div>
+                  <a href="#code" class="text-accentBlue hover:underline font-mono">Open saved code</a>
+                </div>
+                <div class="py-2 flex items-center justify-between text-xs">
+                  <div class="flex items-center gap-3">
+                    <span class="font-mono text-textMuted tabular w-20">11 Nov</span>
+                    <span class="font-mono text-textSecondary w-16">CS 101</span>
+                    <span class="text-textPrimary font-medium">Lecture 09: Loops and Conditionals in C++</span>
+                  </div>
+                  <a href="#code" class="text-accentBlue hover:underline font-mono">Open saved code</a>
+                </div>
+                <div class="py-2 flex items-center justify-between text-xs">
+                  <div class="flex items-center gap-3">
+                    <span class="font-mono text-textMuted tabular w-20">10 Nov</span>
+                    <span class="font-mono text-textSecondary w-16">CS 201</span>
+                    <span class="text-textPrimary font-medium">Lecture 13: Linked Lists vs Dynamic Arrays</span>
+                  </div>
+                  <a href="#code" class="text-accentBlue hover:underline font-mono">Open saved code</a>
+                </div>
+                <div class="py-2 flex items-center justify-between text-xs">
+                  <div class="flex items-center gap-3">
+                    <span class="font-mono text-textMuted tabular w-20">07 Nov</span>
+                    <span class="font-mono text-textSecondary w-16">CS 201</span>
+                    <span class="text-textPrimary font-medium">Lecture 12: Structs and Memory Layout</span>
+                  </div>
+                  <a href="#code" class="text-accentBlue hover:underline font-mono">Open saved code</a>
+                </div>
+                <div class="py-2 flex items-center justify-between text-xs">
+                  <div class="flex items-center gap-3">
+                    <span class="font-mono text-textMuted tabular w-20">05 Nov</span>
+                    <span class="font-mono text-textSecondary w-16">CS 305</span>
+                    <span class="text-textPrimary font-medium">Lecture 10: Kernel Mode vs User Mode</span>
+                  </div>
+                  <a href="#code" class="text-accentBlue hover:underline font-mono">Open saved code</a>
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+          <!-- ============================================== -->
+          <!-- RIGHT NARROW COLUMN (~280px)                   -->
+          <!-- ============================================== -->
+          <aside class="w-full xl:w-72 shrink-0 space-y-6 pt-1 xl:border-l xl:border-borderSubtle xl:pl-6">
+            
+            <!-- Quick Actions -->
+            <div class="p-3 bg-surface border border-borderPrimary rounded-sm">
+              <span class="text-2xs font-mono uppercase text-textMuted tracking-wider font-semibold block mb-2">Personal Sandbox</span>
+              <a href="#open-workspace" class="w-full py-1.5 px-3 bg-surfaceHover hover:bg-borderPrimary border border-borderPrimary rounded text-textPrimary text-xs font-medium flex items-center justify-between transition-colors">
+                <span class="flex items-center gap-2">
+                  <svg class="w-3.5 h-3.5 text-accentBlue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                  <span>Open C++ Playground</span>
+                </span>
+                <span class="text-textMuted text-xs">&rarr;</span>
+              </a>
+            </div>
+
+            <!-- Deadlines & Milestones (Next 3 in plain list form) -->
+            <div>
+              <div class="pb-1.5 border-b border-borderSubtle flex items-center justify-between">
+                <span class="text-xs font-mono uppercase tracking-wider text-textSecondary font-semibold">Upcoming Deadlines</span>
+                <span class="text-2xs font-mono text-textMuted tabular">Next 3</span>
+              </div>
+              <ul class="mt-3 space-y-3" aria-label="Upcoming Deadlines List">
+                <li class="border-l-2 border-statusWarning pl-2.5 py-0.5">
+                  <div class="flex items-center justify-between text-2xs font-mono text-statusWarning">
+                    <span class="font-semibold">Today · 23:59</span>
+                    <span>Exam</span>
+                  </div>
+                  <div class="text-xs font-medium text-textPrimary mt-0.5">CS 201 Midterm Practical</div>
+                  <div class="text-2xs text-textSecondary">Section B · Closes in 9 hours</div>
+                </li>
+
+                <li class="border-l-2 border-accentBlue pl-2.5 py-0.5">
+                  <div class="flex items-center justify-between text-2xs font-mono text-accentBlue">
+                    <span class="font-semibold">Thu 13 Nov · 10:00</span>
+                    <span>Lecture</span>
+                  </div>
+                  <div class="text-xs font-medium text-textPrimary mt-0.5">Queue & Circular Buffers</div>
+                  <div class="text-2xs text-textSecondary">CS 201 Section B · Lab 302</div>
+                </li>
+
+                <li class="border-l-2 border-borderPrimary pl-2.5 py-0.5">
+                  <div class="flex items-center justify-between text-2xs font-mono text-textMuted">
+                    <span>Fri 14 Nov · 12:00</span>
+                    <span>Assessment</span>
+                  </div>
+                  <div class="text-xs font-medium text-textPrimary mt-0.5">CS 305 Concurrency Exam</div>
+                  <div class="text-2xs text-textSecondary">CS 305 Section A · 120 min</div>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Department Notice Pane -->
+            <div class="border border-borderSubtle bg-surface/50 p-3 rounded-sm">
+              <span class="text-2xs font-mono uppercase text-textMuted tracking-wider font-semibold block mb-1">Notice</span>
+              <p class="text-xs text-textSecondary leading-relaxed">
+                Compiler cluster updated to <code class="font-mono text-textPrimary bg-app px-1 py-0.5 rounded text-2xs">g++ 12.2.0 (C++17)</code>. If code fails to build, check headers for strict standards conformance.
+              </p>
+            </div>
+
+          </aside>
+
+        </div>
+
+      </main>
+
+    </div>
+  </section>
+
+  <!-- SCREEN STATE 2: NO LIVE LECTURES (The Live Now Section is completely absent) -->
+  <section id="state-nolive" class="mb-14">
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-xs uppercase px-2 py-0.5 rounded bg-surface border border-borderPrimary text-textSecondary font-medium">State 2</span>
+        <h2 class="text-md font-medium text-textPrimary">No Live Lectures (Top "Live now" row is absent — no empty placeholder)</h2>
+      </div>
+      <span class="text-textSecondary text-xs font-mono">Direct layout collapse to Today's Lectures table</span>
+    </div>
+
+    <div class="w-full bg-app border border-borderPrimary rounded p-6 shadow-md">
+      <div class="max-w-4xl space-y-6">
+        <!-- Direct start with Today's Lectures -->
+        <div>
+          <div class="flex items-center justify-between pb-2 border-b border-borderSubtle">
+            <h3 class="text-sm font-semibold uppercase tracking-wider text-textSecondary font-mono">Today's Lectures</h3>
+            <span class="text-xs text-textMuted font-mono">No lectures currently live</span>
+          </div>
+
+          <div class="mt-2 overflow-x-auto">
+            <table class="w-full text-left border-collapse" style="font-size: 13px;">
+              <thead>
+                <tr class="border-b border-borderPrimary text-2xs uppercase font-mono text-textMuted tracking-wider">
+                  <th class="py-2 pr-4 font-semibold">Time</th>
+                  <th class="py-2 px-4 font-semibold">Course</th>
+                  <th class="py-2 px-4 font-semibold">Lecture</th>
+                  <th class="py-2 px-4 font-semibold">Instructor</th>
+                  <th class="py-2 px-4 font-semibold">Status</th>
+                  <th class="py-2 pl-4 text-right font-semibold">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-borderSubtle">
+                <tr class="hover:bg-surfaceHover">
+                  <td class="py-2.5 pr-4 font-mono text-textMuted tabular">09:00</td>
+                  <td class="py-2.5 px-4 font-mono text-textSecondary">CS 101</td>
+                  <td class="py-2.5 px-4 font-medium text-textPrimary">Variables and Scopes in C++</td>
+                  <td class="py-2.5 px-4 text-textSecondary">Dr. Omar Nasser</td>
+                  <td class="py-2.5 px-4">
+                    <span class="inline-flex items-center gap-1.5 text-xs text-textMuted font-mono">
+                      <span class="w-1.5 h-1.5 rounded-full bg-textMuted"></span> Ended
+                    </span>
+                  </td>
+                  <td class="py-2.5 pl-4 text-right">
+                    <a href="#saved" class="text-accentBlue hover:underline text-xs">Open saved code</a>
+                  </td>
+                </tr>
+                <tr class="hover:bg-surfaceHover">
+                  <td class="py-2.5 pr-4 font-mono text-textPrimary tabular">16:00</td>
+                  <td class="py-2.5 px-4 font-mono text-textSecondary">CS 201</td>
+                  <td class="py-2.5 px-4 font-medium text-textPrimary">Binary Search Trees intro</td>
+                  <td class="py-2.5 px-4 text-textSecondary">Dr. Lina Haddad</td>
+                  <td class="py-2.5 px-4">
+                    <span class="inline-flex items-center gap-1.5 text-xs text-textMuted font-mono">
+                      <span class="w-1.5 h-1.5 rounded-full bg-borderPrimary"></span> Scheduled
+                    </span>
+                  </td>
+                  <td class="py-2.5 pl-4 text-right">
+                    <span class="text-textMuted text-xs tabular">Starts in 3 hours</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN STATE 3: EMPTY STATE (No Enrollments) -->
+  <section id="state-empty" class="mb-14">
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-xs uppercase px-2 py-0.5 rounded bg-surface border border-borderPrimary text-textSecondary font-medium">State 3</span>
+        <h2 class="text-md font-medium text-textPrimary">Empty State (New Student With No Enrollments)</h2>
+      </div>
+      <span class="text-textSecondary text-xs font-mono">Exact rule: One plain sentence + No action button</span>
+    </div>
+
+    <div class="w-full bg-app border border-borderPrimary rounded flex overflow-hidden shadow-md" style="min-height: 380px;">
+      <!-- Sidebar empty state -->
+      <aside class="w-64 bg-surface border-r border-borderPrimary p-4 shrink-0 flex flex-col justify-between">
+        <div>
+          <div class="h-8 flex items-center gap-2 font-semibold text-textPrimary">
+            <div class="w-2.5 h-2.5 bg-accentBlue rounded-sm"></div>
+            <span>CodeClass</span>
+          </div>
+          <div class="mt-4 pt-3 border-t border-borderSubtle">
+            <span class="text-2xs font-mono uppercase text-textMuted tracking-wider font-semibold">My Lectures</span>
+            <!-- Empty state for the whole list -->
+            <p class="text-xs text-textSecondary mt-2">No lectures scheduled this week.</p>
+          </div>
+        </div>
+        <div class="text-2xs font-mono text-textMuted">Rania Khalil · Unenrolled</div>
+      </aside>
+
+      <!-- Main area empty sentence -->
+      <div class="flex-1 p-10 flex flex-col justify-center max-w-xl">
+        <div class="border-l-2 border-borderPrimary pl-4 py-1">
+          <h3 class="text-base font-medium text-textPrimary">No course enrollments</h3>
+          <p class="text-xs text-textSecondary mt-1 leading-relaxed">
+            You aren't enrolled in any sections yet. Contact your department administrator.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN STATE 4: LOADING SKELETONS -->
+  <section id="state-loading" class="mb-14">
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-xs uppercase px-2 py-0.5 rounded bg-surface border border-borderPrimary text-textSecondary font-medium">State 4</span>
+        <h2 class="text-md font-medium text-textPrimary">Loading State (Three skeleton rows in sidebar + Home skeleton)</h2>
+      </div>
+      <span class="text-textSecondary text-xs font-mono">Static placeholder bars · No jarring layout shifts</span>
+    </div>
+
+    <div class="w-full bg-app border border-borderPrimary rounded flex overflow-hidden shadow-md" style="min-height: 360px;">
+      <!-- Sidebar with 3 Skeleton Rows -->
+      <aside class="w-64 bg-surface border-r border-borderPrimary p-3 shrink-0 space-y-3">
+        <div class="h-4 w-28 bg-borderPrimary/60 rounded-sm animate-pulse"></div>
+        <div class="space-y-2 pt-2">
+          <!-- 3 skeleton rows with a static placeholder style -->
+          <div class="p-2 border border-borderSubtle bg-app/50 rounded-sm space-y-1.5">
+            <div class="flex justify-between">
+              <div class="h-2.5 w-12 bg-borderPrimary/80 rounded-sm"></div>
+              <div class="h-2.5 w-14 bg-borderPrimary/50 rounded-sm"></div>
+            </div>
+            <div class="h-3 w-36 bg-borderPrimary rounded-sm"></div>
+            <div class="h-2.5 w-20 bg-borderPrimary/60 rounded-sm"></div>
+          </div>
+          <div class="p-2 border border-borderSubtle bg-app/50 rounded-sm space-y-1.5">
+            <div class="flex justify-between">
+              <div class="h-2.5 w-12 bg-borderPrimary/80 rounded-sm"></div>
+              <div class="h-2.5 w-14 bg-borderPrimary/50 rounded-sm"></div>
+            </div>
+            <div class="h-3 w-40 bg-borderPrimary rounded-sm"></div>
+            <div class="h-2.5 w-16 bg-borderPrimary/60 rounded-sm"></div>
+          </div>
+          <div class="p-2 border border-borderSubtle bg-app/50 rounded-sm space-y-1.5">
+            <div class="flex justify-between">
+              <div class="h-2.5 w-12 bg-borderPrimary/80 rounded-sm"></div>
+              <div class="h-2.5 w-14 bg-borderPrimary/50 rounded-sm"></div>
+            </div>
+            <div class="h-3 w-32 bg-borderPrimary rounded-sm"></div>
+            <div class="h-2.5 w-24 bg-borderPrimary/60 rounded-sm"></div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Home Skeleton -->
+      <div class="flex-1 p-6 space-y-6">
+        <div class="h-16 border border-borderSubtle bg-surface/40 rounded-sm animate-pulse flex items-center px-4 justify-between">
+          <div class="space-y-2">
+            <div class="h-3 w-48 bg-borderPrimary rounded-sm"></div>
+            <div class="h-4 w-72 bg-borderPrimary/80 rounded-sm"></div>
+          </div>
+          <div class="h-8 w-24 bg-borderPrimary/60 rounded-sm"></div>
+        </div>
+        <div class="space-y-3">
+          <div class="h-3 w-32 bg-borderPrimary/80 rounded-sm"></div>
+          <div class="h-8 w-full bg-surface/60 border border-borderSubtle rounded-sm"></div>
+          <div class="h-8 w-full bg-surface/40 border border-borderSubtle rounded-sm"></div>
+          <div class="h-8 w-full bg-surface/30 border border-borderSubtle rounded-sm"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN STATE 5: ERROR LOADING HOME -->
+  <section id="state-error" class="mb-14">
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-xs uppercase px-2 py-0.5 rounded bg-surface border border-borderPrimary text-textSecondary font-medium">State 5</span>
+        <h2 class="text-md font-medium text-textPrimary">Error Loading Home (Sidebar stays usable with cached data)</h2>
+      </div>
+      <span class="text-textSecondary text-xs font-mono">Resilient decoupled failure boundary</span>
+    </div>
+
+    <div class="w-full bg-app border border-borderPrimary rounded flex overflow-hidden shadow-md" style="min-height: 380px;">
+      <!-- Fully operational sidebar -->
+      <aside class="w-64 bg-surface border-r border-borderPrimary p-3 shrink-0">
+        <div class="text-xs font-mono uppercase text-textMuted tracking-wider font-semibold mb-2">My Lectures</div>
+        <div class="p-2 border border-borderSubtle bg-app rounded-sm">
+          <div class="text-xs text-textSecondary font-mono">CS 201</div>
+          <div class="text-base text-textPrimary font-medium">Dynamic Stack & Memory</div>
+          <div class="text-2xs text-textMuted font-mono mt-1">14:00 · Sec B</div>
+        </div>
+      </aside>
+
+      <!-- Main Home Error Container -->
+      <div class="flex-1 p-8 flex flex-col justify-center max-w-lg">
+        <div class="border-l-2 border-statusError pl-4 py-1">
+          <div class="flex items-center gap-2 text-statusError text-xs font-mono uppercase font-semibold">
+            <span>[!] Load Failure</span>
+          </div>
+          <h3 class="text-base font-semibold text-textPrimary mt-1">Couldn't load your overview.</h3>
+          <p class="text-xs text-textSecondary mt-0.5">The application server did not return course records. Your cached schedule in the sidebar remains active.</p>
+          <div class="mt-4">
+            <button class="px-3 py-1.5 bg-surfaceHover hover:bg-borderPrimary border border-borderPrimary text-textPrimary text-xs font-medium rounded transition-colors" tabindex="0">
+              Try again
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN STATE 6: DISCONNECTED / RECONNECTING STATE -->
+  <section id="state-reconnect" class="mb-14">
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-xs uppercase px-2 py-0.5 rounded bg-surface border border-borderPrimary text-textSecondary font-medium">State 6</span>
+        <h2 class="text-md font-medium text-textPrimary">Disconnected / Reconnecting State</h2>
+      </div>
+      <span class="text-textSecondary text-xs font-mono">Notice line at top of list · Existing rows stay visible</span>
+    </div>
+
+    <div class="w-full bg-app border border-borderPrimary rounded flex overflow-hidden shadow-md" style="min-height: 380px;">
+      <!-- Sidebar with Disconnected Banner at top -->
+      <aside class="w-72 bg-surface border-r border-borderPrimary flex flex-col shrink-0">
+        
+        <!-- Disconnected state notice line -->
+        <div class="px-3 py-1.5 bg-amber-950/40 border-b border-amber-900/60 text-2xs text-statusWarning flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-statusWarning animate-pulse"></span>
+          <span>Reconnecting… statuses may be out of date.</span>
+        </div>
+
+        <div class="p-3 space-y-2 flex-1">
+          <div class="text-2xs font-mono uppercase text-textMuted tracking-wider font-semibold">My Lectures</div>
+          
+          <!-- Rows stay visible and retained -->
+          <div class="p-2 border border-borderSubtle bg-app rounded-sm">
+            <div class="flex justify-between text-xs font-mono">
+              <span class="text-textSecondary">CS 201</span>
+              <span class="text-2xs text-textMuted">Last seen live</span>
+            </div>
+            <div class="text-base text-textPrimary font-medium">Dynamic Stack & Memory</div>
+            <div class="text-xs font-mono text-textMuted mt-1">14:00 (Retained state)</div>
+          </div>
+
+          <div class="p-2 border border-borderSubtle bg-app rounded-sm">
+            <div class="flex justify-between text-xs font-mono">
+              <span class="text-textSecondary">CS 101</span>
+              <span class="text-2xs text-textMuted">Waiting for instructor</span>
+            </div>
+            <div class="text-base text-textPrimary font-medium">Recursion & Call Stacks</div>
+            <div class="text-xs font-mono text-textMuted mt-1">14:30</div>
+          </div>
+        </div>
+
+        <div class="p-2 border-t border-borderSubtle text-2xs font-mono text-statusWarning bg-app flex justify-between">
+          <span>Connection: Disconnected</span>
+          <span>Retrying in 4s</span>
+        </div>
+      </aside>
+
+      <!-- Main Home With Top Banner -->
+      <div class="flex-1 flex flex-col">
+        <div class="px-6 py-2 bg-amber-950/30 border-b border-amber-900/60 text-xs text-statusWarning flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-statusWarning"></span>
+            <span>Offline mode. Displaying cached dashboard data. Automatic reconnecting in progress…</span>
+          </div>
+          <button class="underline hover:text-white text-xs font-mono">Force sync</button>
+        </div>
+
+        <div class="p-6 text-textSecondary text-xs">
+          All cached views remain interactive and accessible without clearing the viewport.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN STATE 7: STATUS CHANGE SEQUENCE -->
+  <section id="state-sequence" class="mb-14">
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-xs uppercase px-2 py-0.5 rounded bg-surface border border-borderPrimary text-textSecondary font-medium">State 7</span>
+        <h2 class="text-md font-medium text-textPrimary">Status Change Sequence (One lecture through all 4 life-cycle stages)</h2>
+      </div>
+      <span class="text-textSecondary text-xs font-mono">Quiet in-place swap · No layout jump, no audio, no sound</span>
+    </div>
+
+    <!-- Sequence Frames -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      
+      <!-- Stage 1: Scheduled -->
+      <div class="border border-borderPrimary bg-surface p-3 rounded flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between text-2xs font-mono text-textMuted pb-1.5 border-b border-borderSubtle">
+            <span>Stage 1 · 13:45</span>
+            <span class="uppercase">Scheduled</span>
+          </div>
+          <div class="mt-2.5 p-2 border border-borderSubtle bg-app rounded-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono text-textSecondary">CS 201</span>
+              <span class="text-2xs font-mono text-textMuted tabular">14:00</span>
+            </div>
+            <div class="text-base font-medium text-textPrimary truncate mt-1">Dynamic Stack & Memory</div>
+            <div class="text-2xs text-textMuted mt-2 font-mono">Starts in 15 mins</div>
+          </div>
+        </div>
+        <p class="text-2xs text-textSecondary mt-3">Scheduled start time shown. No live styling.</p>
+      </div>
+
+      <!-- Stage 2: Waiting for instructor -->
+      <div class="border border-borderPrimary bg-surface p-3 rounded flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between text-2xs font-mono text-textSecondary pb-1.5 border-b border-borderSubtle">
+            <span>Stage 2 · 14:00</span>
+            <span class="uppercase">Time Arrived</span>
+          </div>
+          <div class="mt-2.5 p-2 border border-borderSubtle bg-app rounded-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono text-textSecondary">CS 201</span>
+              <span class="text-2xs text-textSecondary">Waiting for instructor</span>
+            </div>
+            <div class="text-base font-medium text-textPrimary truncate mt-1">Dynamic Stack & Memory</div>
+            <div class="text-2xs text-textMuted mt-2 font-mono tabular">14:00 (Time passed)</div>
+          </div>
+        </div>
+        <p class="text-2xs text-textSecondary mt-3">Scheduled time arrived, instructor not yet started. Never "Live".</p>
+      </div>
+
+      <!-- Stage 3: Live now -->
+      <div class="border border-emerald-900 bg-surface p-3 rounded flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between text-2xs font-mono text-emerald-400 pb-1.5 border-b border-emerald-900/60">
+            <span>Stage 3 · 14:02</span>
+            <span class="uppercase font-semibold">Started</span>
+          </div>
+          <div class="mt-2.5 p-2 border border-emerald-900/80 bg-statusLiveBg rounded-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono text-emerald-400 font-semibold">CS 201</span>
+              <div class="flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-statusLive"></span>
+                <span class="text-2xs font-medium text-emerald-300">Live now</span>
+              </div>
+            </div>
+            <div class="text-base font-semibold text-white truncate mt-1">Dynamic Stack & Memory</div>
+            <div class="flex items-center justify-between mt-2 pt-1 border-t border-emerald-900/40">
+              <span class="text-2xs text-textSecondary font-mono tabular">14:00 – 15:30</span>
+              <button class="px-2 py-0.5 bg-statusLive text-black font-semibold text-xs rounded">Join</button>
+            </div>
+          </div>
+        </div>
+        <p class="text-2xs text-emerald-400 mt-3">Instructor clicks "Start Session". Green dot + live tint + Join CTA.</p>
+      </div>
+
+      <!-- Stage 4: Ended & Saved -->
+      <div class="border border-borderPrimary bg-surface p-3 rounded flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between text-2xs font-mono text-textMuted pb-1.5 border-b border-borderSubtle">
+            <span>Stage 4 · 15:32</span>
+            <span class="uppercase">Archived</span>
+          </div>
+          <div class="mt-2.5 p-2 border border-borderSubtle bg-app/80 rounded-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono text-textMuted">CS 201</span>
+              <span class="text-2xs text-textMuted">Ended</span>
+            </div>
+            <div class="text-base text-textSecondary truncate mt-1">Dynamic Stack & Memory</div>
+            <div class="flex items-center justify-between mt-2 pt-1 border-t border-borderSubtle">
+              <span class="text-2xs text-textMuted font-mono tabular">14:00 – 15:30</span>
+              <a href="#code" class="text-accentBlue hover:underline text-xs">Saved code</a>
+            </div>
+          </div>
+        </div>
+        <p class="text-2xs text-textSecondary mt-3">Live indicator swapped with "Ended" and "Saved code" link.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SCREEN STATE 8: ACCESS DENIED (Inside Shell) -->
+  <section id="state-accessdenied" class="mb-14">
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-xs uppercase px-2 py-0.5 rounded bg-surface border border-borderPrimary text-textSecondary font-medium">State 8</span>
+        <h2 class="text-md font-medium text-textPrimary">Access Denied (Student attempts opening an instructor route)</h2>
+      </div>
+      <span class="text-textSecondary text-xs font-mono">Rendered inside normal app shell · Clear exit route</span>
+    </div>
+
+    <div class="w-full bg-app border border-borderPrimary rounded flex overflow-hidden shadow-md" style="min-height: 420px;">
+      <!-- Intact Navigation Shell -->
+      <aside class="w-64 bg-surface border-r border-borderPrimary p-3 shrink-0 flex flex-col justify-between">
+        <div class="space-y-3">
+          <div class="font-semibold text-textPrimary flex items-center gap-2">
+            <div class="w-2.5 h-2.5 bg-accentBlue rounded-sm"></div>
+            <span>CodeClass</span>
+          </div>
+          <div class="pt-2 border-t border-borderSubtle space-y-1">
+            <a href="#home" class="block px-2 py-1 text-xs text-textSecondary hover:text-textPrimary">Home</a>
+            <a href="#courses" class="block px-2 py-1 text-xs text-textSecondary hover:text-textPrimary">My Courses</a>
+          </div>
+        </div>
+        <div class="text-2xs font-mono text-textMuted">Protected Shell ACL</div>
+      </aside>
+
+      <!-- Center Pane Error Content -->
+      <div class="flex-1 p-10 flex flex-col justify-center items-start max-w-xl">
+        <div class="font-mono text-xs text-statusError uppercase tracking-wider mb-2 font-semibold">
+          403 Forbidden · Role Violation
+        </div>
+        <h3 class="text-xl font-semibold text-textPrimary">You don't have access to this page.</h3>
+        <p class="text-xs text-textSecondary mt-2 leading-relaxed">
+          The requested URL requires instructor or department administrator privileges. Your student account is active but not authorized for this section.
+        </p>
+        <div class="mt-6">
+          <a href="#home" class="px-4 py-2 bg-accentBlue hover:bg-accentBlueHover text-white text-base font-medium rounded transition-colors inline-block" tabindex="0">
+            Go to my home &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN STATE 9: MOBILE VIEWPORTS (~390px) -->
+  <section id="state-mobile" class="mb-14">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-xs uppercase px-2 py-0.5 rounded bg-surface border border-borderPrimary text-textSecondary font-medium">State 9 · Mobile Adaptations</span>
+        <h2 class="text-md font-medium text-textPrimary">Mobile 390px Viewports (Home, Navigation Drawer, Live Alert Bar)</h2>
+      </div>
+      <span class="text-textSecondary text-xs font-mono">&ge; 44px Touch Targets · Stacked Table Rows</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <!-- FRAME 9A: MOBILE HOME WITH COMPACT LIVE BAR -->
+      <div class="border border-borderPrimary bg-app rounded overflow-hidden shadow-lg mx-auto w-full max-w-[390px] flex flex-col" style="height: 680px;">
+        
+        <!-- Mobile Header with Hamburger Menu -->
+        <div class="h-12 border-b border-borderPrimary px-4 flex items-center justify-between bg-surface shrink-0">
+          <div class="flex items-center gap-2">
+            <button class="px-2 py-1 border border-borderPrimary rounded text-textPrimary text-xs font-medium flex items-center gap-1.5 hover:bg-surfaceHover" style="min-height: 36px;">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+              <span>Menu</span>
+            </button>
+            <span class="font-semibold text-textPrimary text-base">CodeClass</span>
+          </div>
+          <span class="font-mono text-xs text-textSecondary">Rania K.</span>
+        </div>
+
+        <!-- COMPACT LIVE LECTURE AVAILABLE BAR (Sticky below header) -->
+        <div class="px-4 py-2.5 bg-statusLiveBg border-b border-emerald-900 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="w-2 h-2 rounded-full bg-statusLive animate-pulse shrink-0"></span>
+            <div class="min-w-0">
+              <div class="text-2xs font-mono uppercase text-emerald-400 font-semibold leading-tight">Live lecture available</div>
+              <div class="text-xs text-white font-medium truncate">CS 201 · Dynamic Stack</div>
+            </div>
+          </div>
+          <a href="#join-mobile" class="px-3.5 py-2 bg-statusLive hover:bg-emerald-400 text-black font-semibold text-xs rounded shrink-0 flex items-center justify-center" style="min-height: 44px; min-width: 64px;">
+            Join
+          </a>
+        </div>
+
+        <!-- Mobile Scroll Area -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4">
+          
+          <!-- Stacked Lectures for Today -->
+          <div>
+            <div class="flex items-center justify-between pb-1 border-b border-borderSubtle">
+              <span class="text-2xs font-mono uppercase tracking-wider text-textMuted font-semibold">Today's Lectures</span>
+              <span class="text-2xs font-mono text-textMuted">12 Nov</span>
+            </div>
+
+            <!-- Stacked Row 1 (Live) -->
+            <div class="py-2.5 border-b border-borderSubtle space-y-1">
+              <div class="flex justify-between items-baseline">
+                <span class="font-medium text-textPrimary text-base">Dynamic Stack & Memory</span>
+                <span class="font-mono text-xs text-emerald-400 font-medium tabular">14:00</span>
+              </div>
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-textSecondary">CS 201 · Dr. Lina Haddad</span>
+                <span class="text-2xs font-mono text-emerald-400 flex items-center gap-1 font-semibold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-statusLive"></span> Live now
+                </span>
+              </div>
+              <div class="pt-1.5">
+                <a href="#join" class="w-full py-2 bg-statusLive text-black font-semibold text-xs rounded flex items-center justify-center" style="min-height: 44px;">
+                  Join live session
+                </a>
+              </div>
+            </div>
+
+            <!-- Stacked Row 2 (Waiting) -->
+            <div class="py-2.5 border-b border-borderSubtle space-y-1">
+              <div class="flex justify-between items-baseline">
+                <span class="font-medium text-textPrimary text-base">Recursion & Call Stacks</span>
+                <span class="font-mono text-xs text-textSecondary tabular">14:30</span>
+              </div>
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-textSecondary">CS 101 · Dr. Omar Nasser</span>
+                <span class="text-2xs font-mono text-textSecondary">Waiting for instructor</span>
+              </div>
+            </div>
+
+            <!-- Stacked Row 3 (Ended) -->
+            <div class="py-2.5 border-b border-borderSubtle space-y-1">
+              <div class="flex justify-between items-baseline">
+                <span class="font-medium text-textSecondary text-base">Process Scheduling Basics</span>
+                <span class="font-mono text-xs text-textMuted tabular">10:00</span>
+              </div>
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-textMuted">CS 305 · Ended</span>
+                <a href="#code" class="text-accentBlue font-mono text-xs">Open saved code &rarr;</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Exam Stacked Card -->
+          <div class="p-3 bg-surface border border-borderPrimary rounded-sm">
+            <div class="flex justify-between text-2xs font-mono text-statusWarning">
+              <span class="font-semibold uppercase">Exam Open Now</span>
+              <span>Closes 23:59</span>
+            </div>
+            <div class="text-base font-semibold text-textPrimary mt-1">CS 201 Midterm Practical</div>
+            <div class="text-xs text-textSecondary mt-0.5">3 problems · 90 min limit</div>
+            <div class="mt-3">
+              <a href="#exam" class="w-full py-2 bg-accentBlue text-white font-medium text-xs rounded flex items-center justify-center" style="min-height: 44px;">
+                Start exam &rarr;
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Bottom Safe Bar Indicator -->
+        <div class="h-4 bg-surface border-t border-borderSubtle shrink-0"></div>
+      </div>
+
+      <!-- FRAME 9B: MOBILE NAVIGATION DRAWER (OPENED) -->
+      <div class="border border-borderPrimary bg-app rounded overflow-hidden shadow-lg mx-auto w-full max-w-[390px] flex flex-col relative" style="height: 680px;">
+        
+        <!-- Drawer Backdrop Overlay -->
+        <div class="absolute inset-0 bg-black/70 z-10"></div>
+
+        <!-- The Slide-over Navigation Drawer -->
+        <div class="absolute top-0 bottom-0 left-0 w-5/6 bg-surface border-r border-borderPrimary z-20 flex flex-col p-4">
+          
+          <div class="flex items-center justify-between pb-3 border-b border-borderPrimary">
+            <div class="flex items-center gap-2">
+              <div class="w-2.5 h-2.5 bg-accentBlue rounded-sm"></div>
+              <span class="font-semibold text-textPrimary text-base">CodeClass Menu</span>
+            </div>
+            <button class="text-textSecondary hover:text-white p-1" style="min-width: 32px; min-height: 32px;">✕</button>
+          </div>
+
+          <!-- Main Navigation inside Drawer -->
+          <nav class="py-3 border-b border-borderSubtle space-y-1">
+            <a href="#home" class="selected-nav block px-3 py-2 rounded text-base font-medium" style="min-height: 44px; display: flex; align-items: center;">Home</a>
+            <a href="#courses" class="block px-3 py-2 rounded text-base text-textSecondary" style="min-height: 44px; display: flex; align-items: center;">My Courses</a>
+            <a href="#exams" class="block px-3 py-2 rounded text-base text-textSecondary" style="min-height: 44px; display: flex; align-items: center;">Exams (1 active)</a>
+            <a href="#workspace" class="block px-3 py-2 rounded text-base text-textSecondary" style="min-height: 44px; display: flex; align-items: center;">My Workspace</a>
+          </nav>
+
+          <!-- "My Lectures" persistent schedule inside Drawer -->
+          <div class="flex-1 overflow-y-auto custom-scrollbar py-3 space-y-3">
+            <div class="text-2xs font-mono uppercase text-textMuted tracking-wider font-semibold">Today's Lectures</div>
+            
+            <div class="p-2 border border-emerald-900 bg-statusLiveBg rounded-sm">
+              <div class="flex justify-between text-2xs font-mono">
+                <span class="text-emerald-400">CS 201</span>
+                <span class="text-emerald-300 font-bold">Live now</span>
+              </div>
+              <div class="text-xs font-semibold text-white mt-0.5">Dynamic Stack & Memory</div>
+              <a href="#join" class="mt-2 w-full py-1.5 bg-statusLive text-black font-semibold text-xs rounded text-center block" style="min-height: 40px; display: flex; align-items: center; justify-content: center;">
+                Join lecture
+              </a>
+            </div>
+
+            <div class="p-2 border border-borderSubtle bg-app rounded-sm">
+              <div class="flex justify-between text-2xs font-mono">
+                <span class="text-textSecondary">CS 101</span>
+                <span class="text-textSecondary">14:30</span>
+              </div>
+              <div class="text-xs text-textPrimary mt-0.5">Recursion & Call Stacks</div>
+              <div class="text-2xs text-textMuted mt-1">Waiting for instructor</div>
+            </div>
+          </div>
+
+          <!-- Profile in Drawer Footer -->
+          <div class="pt-3 border-t border-borderPrimary flex items-center justify-between text-xs">
+            <div>
+              <div class="font-medium text-textPrimary">Rania Khalil</div>
+              <div class="text-2xs text-textMuted font-mono">r.khalil@univ.edu</div>
+            </div>
+            <a href="#signout" class="text-textSecondary hover:underline">Sign out</a>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- FRAME 9C: MOBILE SPECIFICATION DETAILS -->
+      <div class="border border-borderPrimary bg-surface p-5 rounded flex flex-col justify-between">
+        <div>
+          <span class="font-mono text-xs uppercase px-2 py-0.5 rounded bg-app border border-borderPrimary text-textSecondary font-semibold">Ergonomics Spec</span>
+          <h3 class="text-base font-semibold text-textPrimary mt-2">Mobile Behavioral Contract</h3>
+          
+          <ul class="mt-3 space-y-2.5 text-xs text-textSecondary leading-relaxed">
+            <li class="flex items-start gap-2">
+              <span class="font-mono text-accentBlue font-bold">1.</span>
+              <span><strong>Persistent Live Banner</strong>: Slides in below the header whenever a student is outside an active lecture. Provides a guaranteed &ge; 44px tap target to jump into code.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="font-mono text-accentBlue font-bold">2.</span>
+              <span><strong>Drawer Integration</strong>: "My Lectures" moves directly into the mobile drawer, retaining the identical 4-state lifecycle (Scheduled, Waiting, Live, Ended) with zero feature loss.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="font-mono text-accentBlue font-bold">3.</span>
+              <span><strong>Tabular Unstacking</strong>: Wide multi-column tables cleanly break into 2-line stacked card rows to eliminate horizontal scrolling while keeping timestamps aligned.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="font-mono text-accentBlue font-bold">4.</span>
+              <span><strong>Accessibility Guarantee</strong>: Polite screen-reader live region (`aria-live="polite"`) quietly announces when an instructor turns a lecture live without visual interruptions.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-borderSubtle text-2xs font-mono text-textMuted">
+          Touch targets calibrated to iOS Human Interface & Android Material guidelines.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HIDDEN ACCESSIBILITY LIVE REGION -->
+  <div class="sr-only" aria-live="polite" aria-atomic="true" id="accessibility-announcer">
+    CS 201 Lecture 14 is now live.
+  </div>
+
+</body>
+</html>

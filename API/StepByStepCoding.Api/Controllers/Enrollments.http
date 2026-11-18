@@ -1,0 +1,31 @@
+# Log in using Auth.http first; these requests use the HTTP client cookie jar.
+@host = https://localhost:7147
+@id = 00000000-0000-0000-0000-000000000001
+@version = 00000000-0000-0000-0000-000000000002
+
+### List
+GET {{host}}/api/enrollments?page=1&recordsPerPage=20
+
+### Detail
+GET {{host}}/api/enrollments/{{id}}
+
+### CreateEnrollment
+POST {{host}}/api/enrollments
+Content-Type: application/json
+
+{
+  "sectionId": "{{id}}",
+  "studentId": "{{id}}"
+}
+
+### UpdateEnrollment
+PUT {{host}}/api/enrollments/{{id}}
+Content-Type: application/json
+
+{
+  "version": "{{version}}",
+  "active": true
+}
+
+### DeleteEnrollment
+DELETE {{host}}/api/enrollments/{{id}}?version={{version}}
